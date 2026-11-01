@@ -148,21 +148,32 @@ class AlarmReceiver : BroadcastReceiver() {
 
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(alarmId, notificationBuilder.build())
+        try {
+            notificationManager.notify(alarmId, notificationBuilder.build())
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to show notification: ${e.message}", e)
+        }
 
         // 6. Start Foreground AlarmService to play ringing audio & vibration
         val serviceIntent = Intent(context, AlarmService::class.java).apply {
             putExtras(intent)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(serviceIntent)
-        } else {
-            context.startService(serviceIntent)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent)
+            } else {
+                context.startService(serviceIntent)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start AlarmService: ${e.message}", e)
         }
 
         // 7. Directly attempt to launch AlarmActivity
         try {
             context.startActivity(fullScreenIntent)
+        } catch (e: Exception) {
+            Log.e(TAG, "Could not start AlarmActivity directly; notification will handle it", e)
+        }
         } catch (e: Exception) {
             Log.e(TAG, "Could not start AlarmActivity directly; notification will handle it", e)
         }
