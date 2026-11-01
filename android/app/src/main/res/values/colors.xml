@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_500">#14b8a6</color>
+    <color name="primary_600">#0d9488</color>
+    <color name="primary_700">#0f766e</color>
+    <color name="primary_900">#134e4a</color>
+    <color name="primary_950">#042f2e</color>
+    
+    <color name="mint_500">#22c55e</color>
+    <color name="mint_600">#16a34a</color>
+    
+    <color name="snooze_500">#eab308</color>
+    <color name="snooze_600">#ca8a04</color>
+    
+    <color name="alarm_500">#f43f5e</color>
+    <color name="alarm_600">#e11d48</color>
+    
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="dark_bg">#091414</color>
+    <color name="text_secondary">#9ca3af</color>
+</resources>

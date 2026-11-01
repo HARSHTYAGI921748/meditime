@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Safe area support for devices with notches ── */
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Nunito', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-color: #f0fdfa;
+}
+
+/* Dark mode body */
+.dark body {
+  background-color: #042f2e;
+}
+
+/* ── Scrollable content areas ── */
+.scroll-content {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Bottom nav safe area ── */
+.bottom-nav {
+  padding-bottom: var(--sab);
+}
+
+/* ── Card shimmer loading ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, #e0f2f1 25%, #b2dfdb 50%, #e0f2f1 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* ── Alarm pulse ring ── */
+.alarm-ring {
+  position: relative;
+}
+.alarm-ring::before,
+.alarm-ring::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 3px solid rgba(244, 63, 94, 0.6);
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+.alarm-ring::after {
+  animation-delay: 0.75s;
+}
+
+/* ── Form components ── */
+@layer components {
+  .form-input {
+    @apply w-full bg-gray-50 dark:bg-primary-800 border border-gray-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-400 placeholder-gray-400;
+  }
+  .form-select {
+    @apply w-full bg-gray-50 dark:bg-primary-800 border border-gray-200 dark:border-primary-700 rounded-xl px-3 py-2.5 text-sm text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-primary-400 placeholder-gray-400 appearance-none;
+  }
+}
+
+/* ── Haptic tap feedback ── */
+.tap-target {
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  user-select: none;
+}

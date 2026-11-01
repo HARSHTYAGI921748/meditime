@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediTime: Smart Family Medicine App</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes pulseRing {
+      0% { transform: scale(0.9); opacity: 0.9; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+    @keyframes bellWiggle {
+      0%, 100% { transform: rotate(-12deg); }
+      50% { transform: rotate(12deg); }
+    }
+    .pulse-ring {
+      position: absolute;
+      inset: -12px;
+      border-radius: 9999px;
+      border: 3px solid rgba(239, 68, 68, 0.5);
+      animation: pulseRing 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+    }
+    .bell-wiggle {
+      animation: bellWiggle 0.6s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex items-center justify-center p-0 sm:p-4">
+
+  <!-- Mobile Phone Device Frame -->
+  <div class="w-full max-w-md h-[840px] bg-white rounded-none sm:rounded-[36px] shadow-2xl border-0 sm:border-8 border-slate-900 flex flex-col overflow-hidden relative">
+
+    <!-- Top Status Bar Simulation -->
+    <div class="bg-teal-700 text-white px-6 pt-3 pb-2 flex justify-between items-center text-xs font-semibold select-none z-10">
+      <span id="statusBarClock">08:00 AM</span>
+      <div class="flex items-center gap-1.5">
+        <span>📶 5G</span>
+        <span>🔋 98%</span>
+      </div>
+    </div>
+
+    <!-- MAIN SCROLLABLE APP CONTAINER -->
+    <div id="appContainer" class="flex-1 overflow-y-auto relative bg-[#f2fbf9]">
+
+      <!-- ================= PAGE: HOME ================= -->
+      <section id="pageHome" class="p-4 space-y-4">
+        <!-- Header -->
+        <div class="flex justify-between items-center pt-2">
+          <div>
+            <p class="text-xs font-bold text-teal-700 uppercase tracking-wider">MediTime</p>
+            <h1 class="text-2xl font-black text-slate-900 leading-tight">Today's Schedule</h1>
+          </div>
+          <select id="familySelect" onchange="switchFamilyMember()" class="bg-white border border-teal-200 text-xs font-bold rounded-xl px-3 py-1.5 shadow-sm text-teal-800 outline-none">
+            <option value="Self">Me (Self)</option>
+            <option value="Mother">Mother (Priya)</option>
+            <option value="Father">Father (Rajesh)</option>
+            <option value="Grandmother">Grandmother (Kalyani)</option>
+          </select>
+        </div>
+
+        <!-- Next Alarm Banner -->
+        <div class="bg-gradient-to-r from-teal-600 to-emerald-600 text-white p-4 rounded-2xl shadow-md flex items-center justify-between">
+          <div>
+            <p class="text-xs font-medium text-teal-100 uppercase">Upcoming Alarm</p>
+            <h3 class="text-lg font-black" id="bannerMedName">Metformin 500mg</h3>
+            <p class="text-xs text-teal-100" id="bannerAlarmTime">Today at 08:00 PM • After Food</p>
+          </div>
+          <button onclick="triggerImmediateAlarm()" class="bg-white text-teal-800 text-xs font-extrabold px-3 py-2 rounded-xl shadow active:scale-95 transition-transform">
+            🔔 Test Alarm
+          </button>
+        </div>
+
+        <!-- Today Stats -->
+        <div class="grid grid-cols-3 gap-2.5 text-center">
+          <div class="bg-white p-3 rounded-2xl shadow-sm border border-teal-50">
+            <p class="text-2xl font-black text-teal-700" id="statScheduled">3</p>
+            <p class="text-xs font-semibold text-slate-500">Scheduled</p>
+          </div>
+          <div class="bg-white p-3 rounded-2xl shadow-sm border border-teal-50">
+            <p class="text-2xl font-black text-emerald-600" id="statTaken">1</p>
+            <p class="text-xs font-semibold text-slate-500">Taken</p>
+          </div>
+          <div class="bg-white p-3 rounded-2xl shadow-sm border border-teal-50">
+            <p class="text-2xl font-black text-rose-500" id="statPending">2</p>
+            <p class="text-xs font-semibold text-slate-500">Pending</p>
+          </div>
+        </div>
+
+        <!-- Adherence Bar -->
+        <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-teal-50">
+          <div class="flex justify-between items-center text-xs font-bold mb-1.5">
+            <span class="text-slate-700">Today's Adherence</span>
+            <span class="text-teal-700" id="adherencePercent">33%</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+            <div id="adherenceBar" class="bg-gradient-to-r from-teal-500 to-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 33%"></div>
+          </div>
+        </div>
+
+        <!-- Today's Medicine List -->
+        <div>
+          <h2 class="text-sm font-black text-slate-900 mb-2.5">Today's Reminders</h2>
+          <div id="todayMedicinesList" class="space-y-2.5">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= PAGE: MEDICINES ================= -->
+      <section id="pageMedicines" class="p-4 space-y-4 hidden">
+        <div class="flex justify-between items-center pt-2">
+          <h1 class="text-2xl font-black text-slate-900">Medicines</h1>
+          <button onclick="openAddModal()" class="bg-teal-700 text-white text-xs font-black px-3 py-2 rounded-xl flex items-center gap-1 shadow">
+            + Add Medicine
+          </button>
+        </div>
+
+        <input type="text" id="medicineSearch" oninput="filterMedicines()" placeholder="Search medicines..." class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:ring-2 focus:ring-teal-500 shadow-sm">
+
+        <div id="allMedicinesList" class="space-y-3">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
+      <!-- ================= PAGE: SCAN ================= -->
+      <section id="pageScan" class="p-4 space-y-4 hidden">
+        <h1 class="text-2xl font-black text-slate-900 pt-2">Prescription Scan</h1>
+        <p class="text-xs text-slate-600">On-device OCR extracts medicines from prescription photos or boxes.</p>
+
+        <div class="border-2 border-dashed border-teal-300 rounded-3xl p-6 text-center bg-white shadow-sm flex flex-col items-center gap-3">
+          <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-3xl">
+            📷
+          </div>
+          <div>
+            <p class="font-extrabold text-sm text-slate-800">Scan Printed Prescription</p>
+            <p class="text-xs text-slate-500 mt-1">100% Private • Processed strictly on device</p>
+          </div>
+          <button onclick="simulateScan()" class="bg-teal-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow active:scale-95 transition-transform">
+            Scan Sample Prescription
+          </button>
+        </div>
+
+        <!-- Scan Output Card -->
+        <div id="scanResultCard" class="bg-white border border-teal-100 rounded-2xl p-4 shadow-sm hidden space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">✓ Text Recognized</span>
+            <span class="text-xs text-slate-400">Confidence: 94%</span>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl text-xs space-y-1 text-slate-700">
+            <p><strong>Medicine:</strong> <span id="scanMedName">Atorvastatin 20mg</span></p>
+            <p><strong>Dose:</strong> 1 tablet once daily (At bedtime)</p>
+            <p><strong>Duration:</strong> 30 Days</p>
+          </div>
+          <button onclick="addScannedMedicine()" class="w-full bg-teal-700 text-white font-bold text-xs py-2.5 rounded-xl shadow">
+            + Add to My Medicines
+          </button>
+        </div>
+      </section>
+
+      <!-- ================= PAGE: FAMILY ================= -->
+      <section id="pageFamily" class="p-4 space-y-4 hidden">
+        <div class="flex justify-between items-center pt-2">
+          <h1 class="text-2xl font-black text-slate-900">Family Profiles</h1>
+          <button onclick="promptAddFamily()" class="bg-teal-700 text-white text-xs font-black px-3 py-2 rounded-xl shadow">
+            + Add Member
+          </button>
+        </div>
+
+        <div id="familyProfilesList" class="space-y-3">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
+      <!-- ================= PAGE: HISTORY ================= -->
+      <section id="pageHistory" class="p-4 space-y-4 hidden">
+        <div class="flex justify-between items-center pt-2">
+          <h1 class="text-2xl font-black text-slate-900">Dose History</h1>
+          <button onclick="exportHistoryCsv()" class="bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm">
+            Export CSV
+          </button>
+        </div>
+
+        <div id="historyLogList" class="space-y-2">
+          <!-- Populated via JS -->
+        </div>
+      </section>
+
+      <!-- ================= PAGE: SETTINGS ================= -->
+      <section id="pageSettings" class="p-4 space-y-4 hidden">
+        <h1 class="text-2xl font-black text-slate-900 pt-2">Settings</h1>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-50 space-y-3 text-xs">
+          <div class="flex justify-between items-center py-1">
+            <span class="font-bold text-slate-700">Language</span>
+            <div class="flex gap-1">
+              <button class="bg-teal-700 text-white font-bold px-2.5 py-1 rounded-lg">English</button>
+              <button class="bg-slate-100 text-slate-600 font-bold px-2.5 py-1 rounded-lg">हिन्दी</button>
+            </div>
+          </div>
+          <div class="flex justify-between items-center py-1 border-t border-slate-100">
+            <div>
+              <p class="font-bold text-slate-700">Lock-Screen Privacy</p>
+              <p class="text-[11px] text-slate-400">Hide drug names when phone is locked</p>
+            </div>
+            <input type="checkbox" id="privacyToggle" class="w-4 h-4 accent-teal-600">
+          </div>
+          <div class="flex justify-between items-center py-1 border-t border-slate-100">
+            <div>
+              <p class="font-bold text-slate-700">Native Android Exact Alarms</p>
+              <p class="text-[11px] text-slate-400">SCHEDULE_EXACT_ALARM</p>
+            </div>
+            <span class="bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full text-[10px]">Active</span>
+          </div>
+        </div>
+
+        <div class="text-center text-xs text-slate-400 pt-4">
+          <p class="font-bold text-teal-700">MediTime v1.0.0</p>
+          <p class="mt-0.5">100% Free & Private Family Medicine Alarms</p>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ================= FULLSCREEN RINGING ALARM OVERLAY ================= -->
+    <div id="alarmOverlay" class="absolute inset-0 bg-slate-950/95 text-white z-50 flex flex-col justify-between p-6 hidden">
+      <!-- Top Time -->
+      <div class="text-center pt-8">
+        <p class="text-teal-400 font-bold text-xs tracking-widest uppercase">Medicine Time</p>
+        <p id="alarmDigitalClock" class="text-5xl font-black tracking-tight mt-1">08:00 AM</p>
+        <p id="alarmFamilyTag" class="text-xs text-teal-200 mt-1 font-semibold">For: Mother (Priya)</p>
+      </div>
+
+      <!-- Ringing Bell Icon Animation -->
+      <div class="flex justify-center my-6">
+        <div class="relative w-28 h-28 flex items-center justify-center">
+          <div class="pulse-ring"></div>
+          <div class="w-24 h-24 bg-rose-600/30 rounded-full flex items-center justify-center">
+            <span class="text-5xl bell-wiggle">🔔</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Medicine Details -->
+      <div class="text-center px-4 space-y-1">
+        <h2 id="alarmMedTitle" class="text-3xl font-black text-white">Metformin 500mg</h2>
+        <p id="alarmDoseTag" class="text-sm font-bold text-teal-300">Take 1 Tablet</p>
+        <div class="inline-block bg-teal-900/70 border border-teal-500/40 text-teal-200 text-xs font-bold px-3 py-1 rounded-full mt-2" id="alarmInstructionTag">
+          After Food
+        </div>
+      </div>
+
+      <!-- Prominent Action Buttons -->
+      <div class="space-y-3 pb-6 pt-6">
+        <button onclick="handleAlarmResponse('taken')" class="w-full bg-emerald-500 active:bg-emerald-600 text-white font-black text-lg py-4 rounded-2xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
+          ✓ TAKEN
+        </button>
+
+        <button onclick="handleAlarmResponse('snoozed')" class="w-full bg-amber-500 active:bg-amber-600 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
+          ⏰ SNOOZE (10 MIN)
+        </button>
+
+        <button onclick="handleAlarmResponse('skipped')" class="w-full bg-slate-800 active:bg-slate-700 text-slate-300 font-semibold text-sm py-3 rounded-2xl transition-transform active:scale-95">
+          ✕ SKIP DOSE
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: ADD MEDICINE ================= -->
+    <div id="addModal" class="absolute inset-0 bg-black/60 z-40 flex items-end hidden">
+      <div class="w-full bg-white rounded-t-3xl p-5 space-y-3 max-h-[90%] overflow-y-auto">
+        <div class="flex justify-between items-center">
+          <h3 class="font-black text-lg text-slate-900">Add Medicine</h3>
+          <button onclick="closeAddModal()" class="text-slate-400 font-bold text-lg p-1">✕</button>
+        </div>
+
+        <input type="text" id="newMedName" placeholder="Medicine Name (e.g. Amlodipine)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+
+        <div class="grid grid-cols-2 gap-2">
+          <input type="text" id="newMedDose" placeholder="Dose (e.g. 1)" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+          <select id="newMedForm" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold bg-white">
+            <option value="tablet">Tablet</option>
+            <option value="capsule">Capsule</option>
+            <option value="syrup">Syrup</option>
+            <option value="drops">Drops</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <input type="time" id="newMedTime" value="09:00" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+          <select id="newMedInstruction" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold bg-white">
+            <option value="After Food">After Food</option>
+            <option value="Before Food">Before Food</option>
+            <option value="With Water">With Water</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <input type="number" id="newMedStock" placeholder="Stock Qty (e.g. 30)" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
+          <select id="newMedFamily" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold bg-white">
+            <option value="Self">For: Me</option>
+            <option value="Mother">For: Mother</option>
+            <option value="Father">For: Father</option>
+            <option value="Grandmother">For: Grandmother</option>
+          </select>
+        </div>
+
+        <button onclick="saveNewMedicine()" class="w-full bg-teal-700 text-white font-black text-sm py-3 rounded-xl shadow">
+          Save & Schedule Native Alarm
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= BOTTOM NAVIGATION BAR ================= -->
+    <nav class="bg-white border-t border-slate-100 flex justify-around items-center py-2 px-1 text-slate-500 z-10">
+      <button onclick="nav('Home')" id="navHome" class="flex flex-col items-center flex-1 text-teal-700 font-extrabold text-[11px]">
+        <span class="text-base">🏠</span>
+        <span>Home</span>
+      </button>
+      <button onclick="nav('Medicines')" id="navMedicines" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
+        <span class="text-base">💊</span>
+        <span>Meds</span>
+      </button>
+      <button onclick="nav('Scan')" id="navScan" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
+        <span class="text-base">📷</span>
+        <span>Scan</span>
+      </button>
+      <button onclick="nav('Family')" id="navFamily" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
+        <span class="text-base">👥</span>
+        <span>Family</span>
+      </button>
+      <button onclick="nav('History')" id="navHistory" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
+        <span class="text-base">📊</span>
+        <span>History</span>
+      </button>
+      <button onclick="nav('Settings')" id="navSettings" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
+        <span class="text-base">⚙️</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <script>
+    // In-memory / localStorage Data Store
+    const DEFAULT_DATA = {
+      family: [
+        { id: 'Self', name: 'Me (Self)', relation: 'self', color: '#0d9488' },
+        { id: 'Mother', name: 'Mother (Priya)', relation: 'mother', color: '#db2777' },
+        { id: 'Father', name: 'Father (Rajesh)', relation: 'father', color: '#2563eb' },
+        { id: 'Grandmother', name: 'Grandmother (Kalyani)', relation: 'grandmother', color: '#7c3aed' }
+      ],
+      medicines: [
+        { id: 'm1', family: 'Self', name: 'Vitamin D3', form: 'capsule', dose: 1, time: '08:00 AM', instruction: 'After Food', stock: 24, status: 'taken' },
+        { id: 'm2', family: 'Mother', name: 'Metformin 500mg', form: 'tablet', dose: 1, time: '01:00 PM', instruction: 'After Food', stock: 18, status: 'pending' },
+        { id: 'm3', family: 'Mother', name: 'Telmisartan 40mg', form: 'tablet', dose: 1, time: '08:00 PM', instruction: 'Before Food', stock: 8, status: 'pending' },
+        { id: 'm4', family: 'Father', name: 'Aspirin 75mg', form: 'tablet', dose: 1, time: '09:00 PM', instruction: 'After Food', stock: 15, status: 'pending' }
+      ],
+      history: [
+        { id: 'h1', medicine: 'Vitamin D3', family: 'Self', time: 'Today, 08:05 AM', status: 'taken', dose: '1 Capsule' },
+        { id: 'h2', medicine: 'Metformin 500mg', family: 'Mother', time: 'Yesterday, 08:12 PM', status: 'taken', dose: '1 Tablet' },
+        { id: 'h3', medicine: 'Telmisartan 40mg', family: 'Mother', time: 'Yesterday, 08:00 PM', status: 'skipped', dose: '1 Tablet' }
+      ]
+    };
+
+    let appData = JSON.parse(localStorage.getItem('meditime_standalone_db')) || DEFAULT_DATA;
+    let currentAlarmMed = null;
+    let audioCtx = null;
+    let alarmInterval = null;
+
+    function save() {
+      localStorage.setItem('meditime_standalone_db', JSON.stringify(appData));
+      render();
+    }
+
+    // Audio chime using Web Audio API (zero external assets needed)
+    function playChime() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.5);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      } catch(e) {}
+    }
+
+    function renderClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('statusBarClock').innerText = timeStr;
+      document.getElementById('alarmDigitalClock').innerText = timeStr;
+    }
+    setInterval(renderClock, 1000);
+    renderClock();
+
+    function render() {
+      const activeFamily = document.getElementById('familySelect').value;
+      const filteredMeds = appData.medicines.filter(m => activeFamily === 'all' || m.family === activeFamily);
+
+      // Home list
+      const listEl = document.getElementById('todayMedicinesList');
+      listEl.innerHTML = '';
+
+      let takenCount = 0;
+      filteredMeds.forEach(m => {
+        if (m.status === 'taken') takenCount++;
+        const card = document.createElement('div');
+        card.className = "bg-white p-3.5 rounded-2xl shadow-sm border-l-4 " + 
+          (m.status === 'taken' ? 'border-emerald-500' : 'border-teal-500') + " flex items-center justify-between";
+        card.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">${m.form === 'syrup' ? '🧴' : '💊'}</span>
+            <div>
+              <p class="font-extrabold text-sm text-slate-900">${m.name}</p>
+              <p class="text-xs text-slate-500">${m.dose} ${m.form} • ${m.instruction}</p>
+              <p class="text-[11px] text-teal-700 font-bold mt-0.5">⏰ ${m.time} • Stock: ${m.stock} left</p>
+            </div>
+          </div>
+          <div>
+            ${m.status === 'taken' 
+              ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full">✓ Taken</span>`
+              : `<button onclick="ringSpecificMed('${m.id}')" class="bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold px-3 py-1.5 rounded-xl active:scale-95">Ring Now</button>`
+            }
+          </div>
+        `;
+        listEl.appendChild(card);
+      });
+
+      // Stats
+      document.getElementById('statScheduled').innerText = filteredMeds.length;
+      document.getElementById('statTaken').innerText = takenCount;
+      document.getElementById('statPending').innerText = Math.max(0, filteredMeds.length - takenCount);
+      const pct = filteredMeds.length > 0 ? Math.round((takenCount / filteredMeds.length) * 100) : 0;
+      document.getElementById('adherencePercent').innerText = pct + '%';
+      document.getElementById('adherenceBar').style.width = pct + '%';
+
+      // Medicines tab
+      const allMedsEl = document.getElementById('allMedicinesList');
+      allMedsEl.innerHTML = '';
+      appData.medicines.forEach(m => {
+        const item = document.createElement('div');
+        item.className = "bg-white p-3.5 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center";
+        item.innerHTML = `
+          <div>
+            <span class="text-xs font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full">${m.family}</span>
+            <p class="font-extrabold text-slate-900 text-sm mt-1">${m.name}</p>
+            <p class="text-xs text-slate-500">${m.dose} ${m.form} • ${m.time} • Stock: ${m.stock}</p>
+          </div>
+          <button onclick="deleteMed('${m.id}')" class="text-rose-500 text-xs font-bold px-2 py-1">Delete</button>
+        `;
+        allMedsEl.appendChild(item);
+      });
+
+      // Family tab
+      const famListEl = document.getElementById('familyProfilesList');
+      famListEl.innerHTML = '';
+      appData.family.forEach(f => {
+        const count = appData.medicines.filter(m => m.family === f.id).length;
+        const fCard = document.createElement('div');
+        fCard.className = "bg-white p-3.5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between";
+        fCard.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl text-white font-black flex items-center justify-center text-sm" style="background-color: ${f.color}">
+              ${f.name.charAt(0)}
+            </div>
+            <div>
+              <p class="font-extrabold text-slate-900 text-sm">${f.name}</p>
+              <p class="text-xs text-slate-500">${count} active medicines scheduled</p>
+            </div>
+          </div>
+        `;
+        famListEl.appendChild(fCard);
+      });
+
+      // History tab
+      const histEl = document.getElementById('historyLogList');
+      histEl.innerHTML = '';
+      appData.history.forEach(h => {
+        const log = document.createElement('div');
+        log.className = "bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center";
+        log.innerHTML = `
+          <div>
+            <p class="font-extrabold text-xs text-slate-900">${h.medicine} <span class="text-slate-400 font-normal">(${h.family})</span></p>
+            <p class="text-[11px] text-slate-500">${h.time}</p>
+          </div>
+          <span class="text-xs font-bold px-2 py-0.5 rounded-full ${h.status === 'taken' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+            ${h.status.toUpperCase()}
+          </span>
+        `;
+        histEl.appendChild(log);
+      });
+    }
+
+    function switchFamilyMember() {
+      render();
+    }
+
+    function nav(page) {
+      ['Home', 'Medicines', 'Scan', 'Family', 'History', 'Settings'].forEach(p => {
+        document.getElementById('page' + p).classList.add('hidden');
+        document.getElementById('nav' + p).classList.remove('text-teal-700', 'font-extrabold');
+        document.getElementById('nav' + p).classList.add('font-semibold');
+      });
+      document.getElementById('page' + page).classList.remove('hidden');
+      document.getElementById('nav' + page).classList.add('text-teal-700', 'font-extrabold');
+    }
+
+    // ALARM ENGINE CONTROLS
+    function triggerImmediateAlarm() {
+      const med = appData.medicines[0];
+      ringAlarmWithMed(med);
+    }
+
+    function ringSpecificMed(medId) {
+      const med = appData.medicines.find(m => m.id === medId);
+      if (med) ringAlarmWithMed(med);
+    }
+
+    function ringAlarmWithMed(med) {
+      currentAlarmMed = med;
+      const privacy = document.getElementById('privacyToggle')?.checked;
+      document.getElementById('alarmMedTitle').innerText = privacy ? "Medicine Reminder" : med.name;
+      document.getElementById('alarmFamilyTag').innerText = "For: " + med.family;
+      document.getElementById('alarmDoseTag').innerText = privacy ? "" : "Take " + med.dose + " " + med.form;
+      document.getElementById('alarmInstructionTag').innerText = med.instruction;
+      document.getElementById('alarmOverlay').classList.remove('hidden');
+
+      // Start ringing sound loop
+      playChime();
+      if (alarmInterval) clearInterval(alarmInterval);
+      alarmInterval = setInterval(playChime, 1500);
+    }
+
+    function handleAlarmResponse(action) {
+      if (alarmInterval) clearInterval(alarmInterval);
+      document.getElementById('alarmOverlay').classList.add('hidden');
+
+      if (!currentAlarmMed) return;
+
+      const nowStr = "Today, " + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      appData.history.unshift({
+        id: 'h_' + Date.now(),
+        medicine: currentAlarmMed.name,
+        family: currentAlarmMed.family,
+        time: nowStr,
+        status: action,
+        dose: currentAlarmMed.dose + " " + currentAlarmMed.form
+      });
+
+      if (action === 'taken') {
+        currentAlarmMed.status = 'taken';
+        currentAlarmMed.stock = Math.max(0, currentAlarmMed.stock - currentAlarmMed.dose);
+      }
+
+      save();
+    }
+
+    // ADD MEDICINE
+    function openAddModal() {
+      document.getElementById('addModal').classList.remove('hidden');
+    }
+    function closeAddModal() {
+      document.getElementById('addModal').classList.add('hidden');
+    }
+    function saveNewMedicine() {
+      const name = document.getElementById('newMedName').value;
+      if (!name) return alert('Please enter medicine name');
+      const dose = parseInt(document.getElementById('newMedDose').value) || 1;
+      const form = document.getElementById('newMedForm').value;
+      const time = document.getElementById('newMedTime').value;
+      const instruction = document.getElementById('newMedInstruction').value;
+      const stock = parseInt(document.getElementById('newMedStock').value) || 30;
+      const family = document.getElementById('newMedFamily').value;
+
+      appData.medicines.push({
+        id: 'm_' + Date.now(),
+        name,
+        dose,
+        form,
+        time,
+        instruction,
+        stock,
+        family,
+        status: 'pending'
+      });
+      closeAddModal();
+      save();
+    }
+
+    function deleteMed(id) {
+      appData.medicines = appData.medicines.filter(m => m.id !== id);
+      save();
+    }
+
+    // SCAN OCR SIMULATION
+    function simulateScan() {
+      const btn = event.target;
+      btn.innerText = "Analyzing text on device...";
+      setTimeout(() => {
+        btn.innerText = "Scan Sample Prescription";
+        document.getElementById('scanResultCard').classList.remove('hidden');
+      }, 1200);
+    }
+
+    function addScannedMedicine() {
+      appData.medicines.push({
+        id: 'm_' + Date.now(),
+        name: 'Atorvastatin 20mg',
+        dose: 1,
+        form: 'tablet',
+        time: '10:00 PM',
+        instruction: 'At Bedtime',
+        stock: 30,
+        family: 'Self',
+        status: 'pending'
+      });
+      alert('Atorvastatin 20mg added to your medicines!');
+      nav('Medicines');
+      save();
+    }
+
+    function promptAddFamily() {
+      const name = prompt('Enter family member name (e.g. Grandma, Uncle Anand):');
+      if (name) {
+        appData.family.push({
+          id: name,
+          name: name,
+          relation: 'other',
+          color: '#' + Math.floor(Math.random()*16777215).toString(16)
+        });
+        save();
+      }
+    }
+
+    function exportHistoryCsv() {
+      let csv = "Medicine,Family,Time,Status,Dose\n";
+      appData.history.forEach(h => {
+        csv += `"${h.medicine}","${h.family}","${h.time}","${h.status}","${h.dose}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "meditime-history.csv";
+      a.click();
+    }
+
+    // Initial render
+    render();
+  </script>
+</body>
+</html>

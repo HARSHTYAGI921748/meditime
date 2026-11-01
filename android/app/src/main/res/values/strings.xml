@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MediTime</string>
+    <string name="title_activity_main">MediTime</string>
+    <string name="channel_alarm_name">Medicine Alarms</string>
+    <string name="channel_alarm_description">Critical medicine reminders with sound, vibration, and lock screen alerts</string>
+    <string name="btn_taken">TAKEN</string>
+    <string name="btn_snooze">SNOOZE</string>
+    <string name="btn_skip">SKIP</string>
+    <string name="alarm_title">MEDICINE TIME</string>
+</resources>

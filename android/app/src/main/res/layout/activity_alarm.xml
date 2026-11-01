@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/dark_bg"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:weightSum="1">
+
+    <!-- Header & Clock -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="32dp">
+
+        <TextView
+            android:id="@+id/tvAlarmTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alarm_title"
+            android:textColor="@color/primary_500"
+            android:textSize="14sp"
+            android:letterSpacing="0.25"
+            android:textStyle="bold" />
+
+        <TextClock
+            android:id="@+id/tcClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format12Hour="hh:mm a"
+            android:format24Hour="HH:mm"
+            android:textColor="@color/white"
+            android:textSize="54sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <!-- Ringing Bell Icon Visual -->
+    <FrameLayout
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="24dp"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:id="@+id/ivAlarmIcon"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center"
+            android:src="@android:drawable/ic_lock_idle_alarm"
+            android:tint="@color/alarm_500" />
+    </FrameLayout>
+
+    <!-- Medicine & Family Details -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingHorizontal="16dp">
+
+        <TextView
+            android:id="@+id/tvFamilyMember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Priya"
+            android:textColor="@color/primary_500"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvMedicineName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Metformin 500mg"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="6dp" />
+
+        <TextView
+            android:id="@+id/tvDose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take: 1 Tablet"
+            android:textColor="@color/text_secondary"
+            android:textSize="18sp"
+            android:layout_marginTop="4dp" />
+
+        <TextView
+            android:id="@+id/tvInstructions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="After Food"
+            android:textColor="@color/mint_500"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:background="#15362b"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="6dp"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
+
+    <!-- Big Action Buttons for Elderly / Accessible Use -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="24dp">
+
+        <!-- TAKEN BUTTON -->
+        <Button
+            android:id="@+id/btnTaken"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:text="@string/btn_taken"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/mint_500"
+            android:layout_marginBottom="12dp" />
+
+        <!-- SNOOZE BUTTON -->
+        <Button
+            android:id="@+id/btnSnooze"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="SNOOZE (10 MIN)"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/snooze_500"
+            android:layout_marginBottom="12dp" />
+
+        <!-- SKIP BUTTON -->
+        <Button
+            android:id="@+id/btnSkip"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/btn_skip"
+            android:textSize="15sp"
+            android:textColor="@color/text_secondary"
+            android:backgroundTint="#1e293b" />
+    </LinearLayout>
+
+</LinearLayout>
