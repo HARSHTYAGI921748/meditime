@@ -66,10 +66,10 @@
       <span id="statusBarClock" class="font-mono-num font-bold">08:00 AM</span>
       <div class="flex items-center gap-2">
         <span id="adminBadgeIndicator" class="bg-teal-500/30 text-teal-200 border border-teal-400/30 px-2 py-0.5 rounded-full text-[10px] font-extrabold flex items-center gap-1">
-          ðŸ›¡ï¸ Admin Mode
+          🛡️ Admin Mode
         </span>
-        <span class="text-xs">ðŸ“¶</span>
-        <span class="text-xs">ðŸ”‹ 98%</span>
+        <span class="text-xs">📶</span>
+        <span class="text-xs">🔋 98%</span>
       </div>
     </div>
 
@@ -90,7 +90,7 @@
           <!-- Profile View Switcher -->
           <div class="flex items-center gap-1.5">
             <select id="familySelect" onchange="switchFamilyMember()" class="bg-white border border-teal-200 text-xs font-bold rounded-2xl px-3 py-2 shadow-sm text-teal-900 outline-none focus:ring-2 focus:ring-teal-500">
-              <option value="all">ðŸ‘¥ All Family</option>
+              <option value="all">👥 All Family</option>
               <option value="Self">Me (Self)</option>
               <option value="Mother">Mother (Priya)</option>
               <option value="Father">Father (Rajesh)</option>
@@ -101,17 +101,17 @@
 
         <!-- Next Urgent Alarm Card -->
         <div class="relative overflow-hidden bg-gradient-to-br from-teal-700 via-teal-800 to-emerald-900 text-white p-5 rounded-3xl shadow-lg border border-teal-600/30">
-          <div class="absolute -right-4 -bottom-6 opacity-15 text-8xl font-black select-none">ðŸ’Š</div>
+          <div class="absolute -right-4 -bottom-6 opacity-15 text-8xl font-black select-none">💊</div>
           <div class="relative z-10 flex justify-between items-start">
             <div>
               <span class="inline-flex items-center gap-1 bg-white/20 backdrop-blur-md text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full text-teal-100">
-                ðŸ”” Next Scheduled Alarm
+                🔔 Next Scheduled Alarm
               </span>
               <h3 class="text-xl font-black mt-2 tracking-tight" id="bannerMedName">Metformin 500mg</h3>
-              <p class="text-xs text-teal-200 font-medium mt-0.5" id="bannerAlarmDetails">For: Mother (Priya) â€¢ 08:00 PM â€¢ After Food</p>
+              <p class="text-xs text-teal-200 font-medium mt-0.5" id="bannerAlarmDetails">For: Mother (Priya) • 08:00 PM • After Food</p>
             </div>
             <button onclick="triggerImmediateAlarm()" class="bg-white active:bg-teal-50 text-teal-900 text-xs font-black px-3.5 py-2.5 rounded-2xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 shrink-0">
-              <span>ðŸ””</span> Test Ring
+              <span>🔔</span> Test Ring
             </button>
           </div>
         </div>
@@ -170,7 +170,7 @@
         <!-- Search Bar -->
         <div class="relative">
           <input type="text" id="medicineSearch" oninput="filterMedicines()" placeholder="Search by name, generic, or family member..." class="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 shadow-sm">
-          <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">ðŸ”</span>
+          <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">🔍</span>
         </div>
 
         <!-- All Medicines List -->
@@ -195,7 +195,7 @@
           <!-- Camera Placeholder State -->
           <div id="cameraPlaceholder" class="p-6 text-center space-y-3 flex flex-col items-center">
             <div class="w-16 h-16 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center text-3xl">
-              ðŸ“·
+              📷
             </div>
             <div>
               <p class="text-white text-sm font-bold">Camera Scanner Ready</p>
@@ -217,13 +217,13 @@
         <!-- Camera Controls -->
         <div class="grid grid-cols-2 gap-2.5">
           <button onclick="startLiveCamera()" id="btnStartCamera" class="bg-teal-700 active:bg-teal-800 text-white font-black text-xs py-3.5 rounded-2xl shadow flex items-center justify-center gap-1.5 active:scale-95 transition-all">
-            <span>ðŸ“¹</span> Start Live Camera
+            <span>📹</span> Start Live Camera
           </button>
           <button onclick="captureCameraPhoto()" id="btnCapture" class="bg-emerald-600 active:bg-emerald-700 text-white font-black text-xs py-3.5 rounded-2xl shadow flex items-center justify-center gap-1.5 active:scale-95 transition-all hidden">
-            <span>ðŸ“¸</span> Snap & Recognize
+            <span>📸</span> Snap & Recognize
           </button>
           <label class="bg-white border border-slate-300 active:bg-slate-50 text-slate-700 font-bold text-xs py-3.5 rounded-2xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer text-center active:scale-95 transition-all">
-            <span>ðŸ“</span> Choose Photo
+            <span>📁</span> Choose Photo
             <input type="file" accept="image/*" onchange="handleFileUpload(event)" class="hidden">
           </label>
         </div>
@@ -233,13 +233,13 @@
           <p class="text-[11px] font-black text-slate-500 uppercase tracking-wider">Test Sample Prescriptions</p>
           <div class="flex gap-2 flex-wrap">
             <button onclick="testSampleScan('Atorvastatin 20mg', '1 tablet daily at bedtime', 'Self')" class="bg-teal-50 border border-teal-200 text-teal-800 px-2.5 py-1.5 rounded-xl text-xs font-bold active:scale-95">
-              ðŸ’Š Atorvastatin (Cholesterol)
+              💊 Atorvastatin (Cholesterol)
             </button>
             <button onclick="testSampleScan('Amlodipine 5mg', '1 tablet in morning after food', 'Father')" class="bg-teal-50 border border-teal-200 text-teal-800 px-2.5 py-1.5 rounded-xl text-xs font-bold active:scale-95">
-              ðŸ’Š Amlodipine (BP)
+              💊 Amlodipine (BP)
             </button>
             <button onclick="testSampleScan('Pantoprazole 40mg', '1 capsule before breakfast', 'Mother')" class="bg-teal-50 border border-teal-200 text-teal-800 px-2.5 py-1.5 rounded-xl text-xs font-bold active:scale-95">
-              ðŸ’Š Pantoprazole (Acidity)
+              💊 Pantoprazole (Acidity)
             </button>
           </div>
         </div>
@@ -248,7 +248,7 @@
         <div id="scanResultCard" class="bg-white border-2 border-emerald-500/40 rounded-3xl p-4 shadow-md hidden space-y-3">
           <div class="flex items-center justify-between">
             <span class="text-xs font-black text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full flex items-center gap-1">
-              âœ“ 100% Prescription Verified
+              ✓ 100% Prescription Verified
             </span>
             <span class="text-[11px] font-bold text-slate-400">On-Device OCR</span>
           </div>
@@ -270,7 +270,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <span class="bg-teal-700 text-white text-[10px] font-black px-2 py-0.5 rounded-full">ADMIN CONSOLE</span>
-              <span class="text-xs text-emerald-600 font-bold">â— Live Sync</span>
+              <span class="text-xs text-emerald-600 font-bold">● Live Sync</span>
             </div>
             <h1 class="text-2xl font-black text-slate-900 tracking-tight mt-0.5">Family Controller</h1>
             <p class="text-xs text-slate-500">Manage all members, alarms, and emergency overrides</p>
@@ -285,10 +285,10 @@
           <p class="text-xs font-black text-teal-400 uppercase tracking-wider">Master Family Overrides</p>
           <div class="grid grid-cols-2 gap-2">
             <button onclick="adminRingAllFamily()" class="bg-rose-600 active:bg-rose-700 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl shadow flex items-center justify-center gap-1 active:scale-95 transition-all">
-              ðŸš¨ Ring All Alarms
+              🚨 Ring All Alarms
             </button>
             <button onclick="adminMarkAllTaken()" class="bg-emerald-600 active:bg-emerald-700 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl shadow flex items-center justify-center gap-1 active:scale-95 transition-all">
-              âœ“ Check All As Taken
+              ✓ Check All As Taken
             </button>
           </div>
           <p class="text-[11px] text-slate-400 leading-snug">As family admin, you can trigger individual alarms, view stock depletion, or adjust doses remotely.</p>
@@ -308,7 +308,7 @@
             <p class="text-xs text-slate-500 font-medium">Verified timestamps & adherence tracking</p>
           </div>
           <button onclick="exportHistoryCsv()" class="bg-white border border-slate-300 text-slate-800 text-xs font-bold px-3 py-2 rounded-xl shadow-sm active:scale-95">
-            ðŸ“¥ Export CSV
+            📥 Export CSV
           </button>
         </div>
 
@@ -340,7 +340,7 @@
             </div>
             <div class="flex gap-1">
               <button class="bg-teal-700 text-white font-bold px-3 py-1.5 rounded-xl">English</button>
-              <button class="bg-slate-100 text-slate-600 font-bold px-3 py-1.5 rounded-xl">à¤¹à¤¿à¤¨à¥à¤¦à¥€</button>
+              <button class="bg-slate-100 text-slate-600 font-bold px-3 py-1.5 rounded-xl">हिन्दी</button>
             </div>
           </div>
 
@@ -384,7 +384,7 @@
         <p class="text-teal-400 font-black text-xs tracking-[0.25em] uppercase">MEDICINE TIME ALARM</p>
         <p id="alarmDigitalClock" class="text-5xl font-black font-mono-num tracking-tight mt-1 text-white">08:00 AM</p>
         <div class="inline-flex items-center gap-1.5 bg-teal-500/20 border border-teal-400/30 px-3 py-1 rounded-full text-teal-200 text-xs font-bold mt-2" id="alarmFamilyTag">
-          ðŸ‘¤ For: Mother (Priya)
+          👤 For: Mother (Priya)
         </div>
       </div>
 
@@ -393,7 +393,7 @@
         <div class="relative w-32 h-32 flex items-center justify-center">
           <div class="pulse-ring-outer"></div>
           <div class="w-24 h-24 bg-rose-600/30 border border-rose-500/50 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(244,63,94,0.4)]">
-            <span class="text-5xl bell-wiggle">ðŸ””</span>
+            <span class="text-5xl bell-wiggle">🔔</span>
           </div>
         </div>
       </div>
@@ -403,22 +403,22 @@
         <h2 id="alarmMedTitle" class="text-3xl font-black text-white tracking-tight">Metformin 500mg</h2>
         <p id="alarmDoseTag" class="text-base font-bold text-teal-300">Take 1 Tablet</p>
         <div class="inline-block bg-teal-900/90 border border-teal-400/40 text-teal-200 text-xs font-bold px-4 py-1.5 rounded-full" id="alarmInstructionTag">
-          ðŸ½ï¸ After Food
+          🍽️ After Food
         </div>
       </div>
 
       <!-- Prominent Accessible Action Buttons for Elderly -->
       <div class="space-y-3 pb-4 pt-4">
         <button onclick="handleAlarmResponse('taken')" class="w-full bg-emerald-500 active:bg-emerald-600 text-white font-black text-lg py-4 rounded-2xl shadow-[0_10px_25px_-5px_rgba(16,185,129,0.5)] transition-all active:scale-95 flex items-center justify-center gap-2">
-          <span class="text-xl">âœ“</span> TAKEN
+          <span class="text-xl">✓</span> TAKEN
         </button>
 
         <button onclick="handleAlarmResponse('snoozed')" class="w-full bg-amber-500 active:bg-amber-600 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
-          <span>â°</span> SNOOZE (10 MIN)
+          <span>⏰</span> SNOOZE (10 MIN)
         </button>
 
         <button onclick="handleAlarmResponse('skipped')" class="w-full bg-slate-800 active:bg-slate-700 text-slate-300 font-semibold text-sm py-3 rounded-2xl transition-all active:scale-95">
-          âœ• SKIP DOSE
+          ✕ SKIP DOSE
         </button>
       </div>
     </div>
@@ -428,7 +428,7 @@
       <div class="w-full bg-white rounded-t-[32px] p-6 space-y-3.5 max-h-[92%] overflow-y-auto shadow-2xl">
         <div class="flex justify-between items-center pb-1 border-b border-slate-100">
           <h3 class="font-black text-lg text-slate-900" id="modalTitle">Add Medicine</h3>
-          <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-1">âœ•</button>
+          <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-1">✕</button>
         </div>
 
         <div>
@@ -454,11 +454,11 @@
           <div>
             <label class="block text-[11px] font-black text-slate-500 uppercase mb-1">Form</label>
             <select id="newMedForm" class="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold bg-white">
-              <option value="tablet">ðŸ’Š Tablet</option>
-              <option value="capsule">ðŸ’Š Capsule</option>
-              <option value="syrup">ðŸ§´ Syrup</option>
-              <option value="drops">ðŸ’§ Drops</option>
-              <option value="injection">ðŸ’‰ Injection</option>
+              <option value="tablet">💊 Tablet</option>
+              <option value="capsule">💊 Capsule</option>
+              <option value="syrup">🧴 Syrup</option>
+              <option value="drops">💧 Drops</option>
+              <option value="injection">💉 Injection</option>
             </select>
           </div>
         </div>
@@ -471,10 +471,10 @@
           <div>
             <label class="block text-[11px] font-black text-slate-500 uppercase mb-1">Instruction</label>
             <select id="newMedInstruction" class="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold bg-white">
-              <option value="After Food">ðŸ½ï¸ After Food</option>
-              <option value="Before Food">ðŸ¥£ Before Food</option>
-              <option value="With Water">ðŸ’§ With Water</option>
-              <option value="At Bedtime">ðŸŒ™ At Bedtime</option>
+              <option value="After Food">🍽️ After Food</option>
+              <option value="Before Food">🥣 Before Food</option>
+              <option value="With Water">💧 With Water</option>
+              <option value="At Bedtime">🌙 At Bedtime</option>
             </select>
           </div>
         </div>
@@ -493,27 +493,27 @@
     <!-- ================= BOTTOM NAVIGATION BAR ================= -->
     <nav class="glass-nav border-t border-slate-200/80 flex justify-around items-center py-2 px-1 text-slate-500 z-20 shrink-0">
       <button onclick="nav('Home')" id="navHome" class="flex flex-col items-center flex-1 text-teal-700 font-extrabold text-[11px]">
-        <span class="text-lg">ðŸ </span>
+        <span class="text-lg">🏠</span>
         <span class="mt-0.5">Home</span>
       </button>
       <button onclick="nav('Medicines')" id="navMedicines" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-lg">ðŸ’Š</span>
+        <span class="text-lg">💊</span>
         <span class="mt-0.5">Meds</span>
       </button>
       <button onclick="nav('Scan')" id="navScan" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-lg">ðŸ“·</span>
+        <span class="text-lg">📷</span>
         <span class="mt-0.5">Scan</span>
       </button>
       <button onclick="nav('Admin')" id="navAdmin" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-lg">ðŸ›¡ï¸</span>
+        <span class="text-lg">🛡️</span>
         <span class="mt-0.5">Admin</span>
       </button>
       <button onclick="nav('History')" id="navHistory" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-lg">ðŸ“Š</span>
+        <span class="text-lg">📊</span>
         <span class="mt-0.5">History</span>
       </button>
       <button onclick="nav('Settings')" id="navSettings" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-lg">âš™ï¸</span>
+        <span class="text-lg">⚙️</span>
         <span class="mt-0.5">Settings</span>
       </button>
     </nav>
@@ -548,6 +548,27 @@
     let alarmInterval = null;
     let videoStream = null;
 
+    // Ensure audio context is ready on first user interaction
+    function initAudio() {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      } catch (e) {}
+    }
+    window.addEventListener('click', initAudio, { once: true });
+    window.addEventListener('touchstart', initAudio, { once: true });
+
+    // Request browser notification permission if available
+    function requestWebNotificationPermission() {
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    }
+
     function save() {
       localStorage.setItem('meditime_master_db', JSON.stringify(appData));
       render();
@@ -556,19 +577,41 @@
     // Audio chime using Web Audio API
     function playChime() {
       try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
+        initAudio();
+        if (!audioCtx) return;
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
+        osc.type = 'triangle';
         osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.5);
-        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.6);
+        gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
         osc.start();
-        osc.stop(audioCtx.currentTime + 0.5);
+        osc.stop(audioCtx.currentTime + 0.6);
       } catch(e) {}
+    }
+
+    function parseTo24Hour(str) {
+      if (!str) return null;
+      str = str.trim();
+      // Format: "HH:MM" (24-hr)
+      if (/^\d{1,2}:\d{2}$/.test(str)) {
+        let [h, m] = str.split(':').map(Number);
+        return (h < 10 ? '0' + h : '' + h) + ':' + (m < 10 ? '0' + m : '' + m);
+      }
+      // Format: "HH:MM AM/PM" or "H:MM AM/PM"
+      const match = str.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+      if (match) {
+        let h = parseInt(match[1]);
+        const m = parseInt(match[2]);
+        const ampm = match[3] ? match[3].toUpperCase() : null;
+        if (ampm === 'PM' && h < 12) h += 12;
+        if (ampm === 'AM' && h === 12) h = 0;
+        return (h < 10 ? '0' + h : '' + h) + ':' + (m < 10 ? '0' + m : '' + m);
+      }
+      return null;
     }
 
     function checkAndTriggerScheduledAlarms() {
@@ -580,25 +623,31 @@
       // Extract current 24-hr hours and minutes
       const curH = now.getHours();
       const curM = now.getMinutes();
-      const cur24Str = (curH < 10 ? '0' + curH : curH) + ':' + (curM < 10 ? '0' + curM : curM);
+      const cur24Str = (curH < 10 ? '0' + curH : '' + curH) + ':' + (curM < 10 ? '0' + curM : '' + curM);
       const todayDateKey = now.toISOString().split('T')[0];
+
+      // Reset daily medicine status if it is a new day
+      if (appData.lastActiveDay !== todayDateKey) {
+        appData.lastActiveDay = todayDateKey;
+        appData.medicines.forEach(m => {
+          m.status = 'pending';
+          m.lastRungMinute = null;
+        });
+        save();
+      }
 
       // Check if any medicine is scheduled for this exact minute
       appData.medicines.forEach(med => {
         if (med.status === 'taken') return;
 
-        let match = false;
-        // 1. Compare with raw 24-hr time
-        if (med.rawTime && med.rawTime === cur24Str) {
-          match = true;
-        }
-        // 2. Compare with formatted time string (e.g. "08:00 AM")
+        let med24 = med.rawTime || parseTo24Hour(med.time);
+        let match = (med24 === cur24Str);
+
+        // Fallback: compare formatted strings
         if (!match && med.time) {
           const medTimeUpper = med.time.trim().toUpperCase();
           const curTimeUpper = timeStr.trim().toUpperCase();
-          if (medTimeUpper === curTimeUpper) {
-            match = true;
-          }
+          if (medTimeUpper === curTimeUpper) match = true;
         }
 
         // Trigger alarm if matched and not already rung in this minute today
@@ -607,6 +656,16 @@
           med.lastRungDate = todayDateKey;
           save(); // persist
           ringAlarmWithMed(med);
+
+          // Also fire browser notification if allowed
+          if ('Notification' in window && Notification.permission === 'granted') {
+            try {
+              new Notification(`⏰ Medicine Time: ${med.name}`, {
+                body: `For ${med.family}: Take ${med.dose} ${med.form} (${med.instruction})`,
+                icon: 'https://cdn-icons-png.flaticon.com/512/883/883360.png'
+              });
+            } catch (e) {}
+          }
         }
       });
     }
@@ -631,25 +690,25 @@
         card.innerHTML = `
           <div class="flex items-center gap-3">
             <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl shrink-0 ${m.status === 'taken' ? 'bg-emerald-50 text-emerald-600' : 'bg-teal-50 text-teal-700'}">
-              ${m.form === 'syrup' ? 'ðŸ§´' : m.form === 'drops' ? 'ðŸ’§' : 'ðŸ’Š'}
+              ${m.form === 'syrup' ? '🧴' : m.form === 'drops' ? '💧' : '💊'}
             </div>
             <div>
               <div class="flex items-center gap-1.5">
                 <p class="font-extrabold text-sm text-slate-900 leading-snug">${m.name}</p>
                 <span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-bold">${m.family}</span>
               </div>
-              <p class="text-xs text-slate-500 font-medium">${m.dose} ${m.form} â€¢ ${m.instruction}</p>
+              <p class="text-xs text-slate-500 font-medium">${m.dose} ${m.form} • ${m.instruction}</p>
               <div class="flex items-center gap-2 mt-1">
-                <span class="text-[11px] text-teal-800 font-bold">â° ${m.time}</span>
+                <span class="text-[11px] text-teal-800 font-bold">⏰ ${m.time}</span>
                 <span class="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full ${isLow ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'}">
-                  Stock: ${m.stock} left ${isLow ? 'âš ï¸ Low' : ''}
+                  Stock: ${m.stock} left ${isLow ? '⚠️ Low' : ''}
                 </span>
               </div>
             </div>
           </div>
           <div class="shrink-0">
             ${m.status === 'taken' 
-              ? `<span class="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-1.5 rounded-xl">âœ“ Taken</span>`
+              ? `<span class="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-1.5 rounded-xl">✓ Taken</span>`
               : `<button onclick="ringSpecificMed('${m.id}')" class="bg-teal-700 active:bg-teal-800 text-white text-xs font-bold px-3 py-2 rounded-xl active:scale-95 shadow-sm">Ring Now</button>`
             }
           </div>
@@ -675,7 +734,7 @@
           <div>
             <span class="text-[10px] font-black text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full uppercase tracking-wider">${m.family}</span>
             <p class="font-extrabold text-slate-900 text-sm mt-1">${m.name}</p>
-            <p class="text-xs text-slate-500 font-medium">${m.dose} ${m.form} â€¢ ${m.time} â€¢ ${m.instruction}</p>
+            <p class="text-xs text-slate-500 font-medium">${m.dose} ${m.form} • ${m.time} • ${m.instruction}</p>
             <p class="text-[11px] font-bold text-teal-700 mt-0.5">Inventory remaining: ${m.stock} units</p>
           </div>
           <div class="flex items-center gap-1.5">
@@ -712,7 +771,7 @@
           <!-- Quick Actions per Family Member -->
           <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
             <button onclick="adminRingMember('${f.id}')" class="bg-teal-50 active:bg-teal-100 text-teal-800 text-xs font-bold py-2 px-2.5 rounded-xl border border-teal-200 flex items-center justify-center gap-1">
-              ðŸ”” Ring Alarms
+              🔔 Ring Alarms
             </button>
             <button onclick="adminQuickAddMed('${f.id}')" class="bg-slate-100 active:bg-slate-200 text-slate-700 text-xs font-bold py-2 px-2.5 rounded-xl flex items-center justify-center gap-1">
               + Assign Med
@@ -736,7 +795,7 @@
         log.innerHTML = `
           <div>
             <p class="font-extrabold text-xs text-slate-900">${h.medicine} <span class="text-teal-700 font-bold">(${h.family})</span></p>
-            <p class="text-[11px] text-slate-500 font-medium mt-0.5">${h.time} â€¢ ${h.dose}</p>
+            <p class="text-[11px] text-slate-500 font-medium mt-0.5">${h.time} • ${h.dose}</p>
           </div>
           <span class="text-[11px] font-black px-2.5 py-1 rounded-full uppercase ${isTaken ? 'bg-emerald-100 text-emerald-800' : h.status === 'snoozed' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'}">
             ${h.status}
@@ -867,7 +926,7 @@
         family: family,
         status: 'pending'
       });
-      alert(`âœ“ ${name} added to ${family}'s medicine schedule!`);
+      alert(`✓ ${name} added to ${family}'s medicine schedule!`);
       nav('Medicines');
       save();
     }
@@ -887,7 +946,7 @@
       currentAlarmMed = med;
       const privacy = document.getElementById('privacyToggle')?.checked;
       document.getElementById('alarmMedTitle').innerText = privacy ? "Medicine Reminder" : med.name;
-      document.getElementById('alarmFamilyTag').innerText = "ðŸ‘¤ For: " + med.family;
+      document.getElementById('alarmFamilyTag').innerText = "👤 For: " + med.family;
       document.getElementById('alarmDoseTag').innerText = privacy ? "" : "Take " + med.dose + " " + med.form;
       document.getElementById('alarmInstructionTag').innerText = med.instruction;
       document.getElementById('alarmOverlay').classList.remove('hidden');
@@ -1005,8 +1064,11 @@
         status: 'pending',
         lastRungDate: null
       });
+      requestWebNotificationPermission();
+      initAudio();
       closeAddModal();
       save();
+      alert(`✓ "${name}" scheduled for ${formattedTime}! Alarm will ring automatically.`);
     }
 
     function deleteMed(id) {
@@ -1027,7 +1089,7 @@
           <div>
             <span class="text-[10px] font-black text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full uppercase">${m.family}</span>
             <p class="font-extrabold text-slate-900 text-sm mt-1">${m.name}</p>
-            <p class="text-xs text-slate-500 font-medium">${m.dose} ${m.form} â€¢ ${m.time}</p>
+            <p class="text-xs text-slate-500 font-medium">${m.dose} ${m.form} • ${m.time}</p>
           </div>
           <button onclick="deleteMed('${m.id}')" class="text-rose-500 text-xs font-bold px-2 py-1">Delete</button>
         `;
