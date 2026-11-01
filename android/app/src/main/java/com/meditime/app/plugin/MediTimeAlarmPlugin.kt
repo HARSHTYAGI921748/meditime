@@ -110,7 +110,7 @@ class MediTimeAlarmPlugin : Plugin() {
     }
 
     @PluginMethod
-    fun checkPermissions(call: PluginCall) {
+    override fun checkPermissions(call: PluginCall) {
         val ret = JSObject()
 
         // 1. Exact Alarm Check
