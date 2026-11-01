@@ -2,183 +2,322 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>MediTime: Smart Family Medicine App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
   <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Smooth glassmorphism */
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+    }
+    /* Ring Animations */
     @keyframes pulseRing {
-      0% { transform: scale(0.9); opacity: 0.9; }
-      100% { transform: scale(1.6); opacity: 0; }
+      0% { transform: scale(0.85); opacity: 0.9; }
+      100% { transform: scale(1.7); opacity: 0; }
     }
     @keyframes bellWiggle {
-      0%, 100% { transform: rotate(-12deg); }
-      50% { transform: rotate(12deg); }
+      0%, 100% { transform: rotate(-15deg); }
+      50% { transform: rotate(15deg); }
     }
-    .pulse-ring {
+    .pulse-ring-outer {
       position: absolute;
-      inset: -12px;
+      inset: -14px;
       border-radius: 9999px;
       border: 3px solid rgba(239, 68, 68, 0.5);
-      animation: pulseRing 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+      animation: pulseRing 1.4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
     }
     .bell-wiggle {
-      animation: bellWiggle 0.6s ease-in-out infinite;
+      animation: bellWiggle 0.5s ease-in-out infinite;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex items-center justify-center p-0 sm:p-4">
+<body class="bg-slate-900 sm:bg-slate-950 text-slate-800 min-h-screen flex items-center justify-center p-0 sm:p-4">
 
-  <!-- Mobile Phone Device Frame -->
-  <div class="w-full max-w-md h-[840px] bg-white rounded-none sm:rounded-[36px] shadow-2xl border-0 sm:border-8 border-slate-900 flex flex-col overflow-hidden relative">
+  <!-- Mobile Frame Mockup Container -->
+  <div class="w-full max-w-md h-[100dvh] sm:h-[860px] bg-slate-50 sm:rounded-[42px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.7)] border-0 sm:border-[8px] border-slate-800 flex flex-col overflow-hidden relative">
 
-    <!-- Top Status Bar Simulation -->
-    <div class="bg-teal-700 text-white px-6 pt-3 pb-2 flex justify-between items-center text-xs font-semibold select-none z-10">
-      <span id="statusBarClock">08:00 AM</span>
-      <div class="flex items-center gap-1.5">
-        <span>📶 5G</span>
-        <span>🔋 98%</span>
+    <!-- Top Native Status Bar Simulation -->
+    <div class="bg-teal-800 text-white px-6 pt-3 pb-2.5 flex justify-between items-center text-xs font-semibold select-none z-20 shrink-0">
+      <span id="statusBarClock" class="font-mono-num font-bold">08:00 AM</span>
+      <div class="flex items-center gap-2">
+        <span id="adminBadgeIndicator" class="bg-teal-500/30 text-teal-200 border border-teal-400/30 px-2 py-0.5 rounded-full text-[10px] font-extrabold flex items-center gap-1">
+          ðŸ›¡ï¸ Admin Mode
+        </span>
+        <span class="text-xs">ðŸ“¶</span>
+        <span class="text-xs">ðŸ”‹ 98%</span>
       </div>
     </div>
 
-    <!-- MAIN SCROLLABLE APP CONTAINER -->
-    <div id="appContainer" class="flex-1 overflow-y-auto relative bg-[#f2fbf9]">
+    <!-- MAIN SCROLLABLE APP VIEWPORT -->
+    <div id="appContainer" class="flex-1 overflow-y-auto relative bg-gradient-to-b from-teal-50/70 via-slate-50 to-slate-100">
 
-      <!-- ================= PAGE: HOME ================= -->
-      <section id="pageHome" class="p-4 space-y-4">
-        <!-- Header -->
-        <div class="flex justify-between items-center pt-2">
+      <!-- ================= 1. HOME SCREEN ================= -->
+      <section id="pageHome" class="p-4 space-y-4 pb-24">
+        <!-- Top bar with Family Filter & Quick Admin shortcut -->
+        <div class="flex justify-between items-center pt-1">
           <div>
-            <p class="text-xs font-bold text-teal-700 uppercase tracking-wider">MediTime</p>
-            <h1 class="text-2xl font-black text-slate-900 leading-tight">Today's Schedule</h1>
+            <div class="flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <p class="text-[11px] font-extrabold text-teal-700 tracking-wider uppercase">MediTime Smart Family</p>
+            </div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight" id="homeGreeting">Today's Schedule</h1>
           </div>
-          <select id="familySelect" onchange="switchFamilyMember()" class="bg-white border border-teal-200 text-xs font-bold rounded-xl px-3 py-1.5 shadow-sm text-teal-800 outline-none">
-            <option value="Self">Me (Self)</option>
-            <option value="Mother">Mother (Priya)</option>
-            <option value="Father">Father (Rajesh)</option>
-            <option value="Grandmother">Grandmother (Kalyani)</option>
-          </select>
-        </div>
-
-        <!-- Next Alarm Banner -->
-        <div class="bg-gradient-to-r from-teal-600 to-emerald-600 text-white p-4 rounded-2xl shadow-md flex items-center justify-between">
-          <div>
-            <p class="text-xs font-medium text-teal-100 uppercase">Upcoming Alarm</p>
-            <h3 class="text-lg font-black" id="bannerMedName">Metformin 500mg</h3>
-            <p class="text-xs text-teal-100" id="bannerAlarmTime">Today at 08:00 PM • After Food</p>
-          </div>
-          <button onclick="triggerImmediateAlarm()" class="bg-white text-teal-800 text-xs font-extrabold px-3 py-2 rounded-xl shadow active:scale-95 transition-transform">
-            🔔 Test Alarm
-          </button>
-        </div>
-
-        <!-- Today Stats -->
-        <div class="grid grid-cols-3 gap-2.5 text-center">
-          <div class="bg-white p-3 rounded-2xl shadow-sm border border-teal-50">
-            <p class="text-2xl font-black text-teal-700" id="statScheduled">3</p>
-            <p class="text-xs font-semibold text-slate-500">Scheduled</p>
-          </div>
-          <div class="bg-white p-3 rounded-2xl shadow-sm border border-teal-50">
-            <p class="text-2xl font-black text-emerald-600" id="statTaken">1</p>
-            <p class="text-xs font-semibold text-slate-500">Taken</p>
-          </div>
-          <div class="bg-white p-3 rounded-2xl shadow-sm border border-teal-50">
-            <p class="text-2xl font-black text-rose-500" id="statPending">2</p>
-            <p class="text-xs font-semibold text-slate-500">Pending</p>
+          <!-- Profile View Switcher -->
+          <div class="flex items-center gap-1.5">
+            <select id="familySelect" onchange="switchFamilyMember()" class="bg-white border border-teal-200 text-xs font-bold rounded-2xl px-3 py-2 shadow-sm text-teal-900 outline-none focus:ring-2 focus:ring-teal-500">
+              <option value="all">ðŸ‘¥ All Family</option>
+              <option value="Self">Me (Self)</option>
+              <option value="Mother">Mother (Priya)</option>
+              <option value="Father">Father (Rajesh)</option>
+              <option value="Grandmother">Grandmother (Kalyani)</option>
+            </select>
           </div>
         </div>
 
-        <!-- Adherence Bar -->
-        <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-teal-50">
-          <div class="flex justify-between items-center text-xs font-bold mb-1.5">
-            <span class="text-slate-700">Today's Adherence</span>
-            <span class="text-teal-700" id="adherencePercent">33%</span>
-          </div>
-          <div class="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-            <div id="adherenceBar" class="bg-gradient-to-r from-teal-500 to-emerald-500 h-2.5 rounded-full transition-all duration-500" style="width: 33%"></div>
+        <!-- Next Urgent Alarm Card -->
+        <div class="relative overflow-hidden bg-gradient-to-br from-teal-700 via-teal-800 to-emerald-900 text-white p-5 rounded-3xl shadow-lg border border-teal-600/30">
+          <div class="absolute -right-4 -bottom-6 opacity-15 text-8xl font-black select-none">ðŸ’Š</div>
+          <div class="relative z-10 flex justify-between items-start">
+            <div>
+              <span class="inline-flex items-center gap-1 bg-white/20 backdrop-blur-md text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full text-teal-100">
+                ðŸ”” Next Scheduled Alarm
+              </span>
+              <h3 class="text-xl font-black mt-2 tracking-tight" id="bannerMedName">Metformin 500mg</h3>
+              <p class="text-xs text-teal-200 font-medium mt-0.5" id="bannerAlarmDetails">For: Mother (Priya) â€¢ 08:00 PM â€¢ After Food</p>
+            </div>
+            <button onclick="triggerImmediateAlarm()" class="bg-white active:bg-teal-50 text-teal-900 text-xs font-black px-3.5 py-2.5 rounded-2xl shadow-md active:scale-95 transition-all flex items-center gap-1.5 shrink-0">
+              <span>ðŸ””</span> Test Ring
+            </button>
           </div>
         </div>
 
-        <!-- Today's Medicine List -->
+        <!-- Quick Metrics Overview -->
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200/60 text-center">
+            <p class="text-2xl font-black text-teal-700 font-mono-num" id="statScheduled">4</p>
+            <p class="text-[11px] font-bold text-slate-500 uppercase mt-0.5">Scheduled</p>
+          </div>
+          <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200/60 text-center">
+            <p class="text-2xl font-black text-emerald-600 font-mono-num" id="statTaken">1</p>
+            <p class="text-[11px] font-bold text-slate-500 uppercase mt-0.5">Taken</p>
+          </div>
+          <div class="bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200/60 text-center">
+            <p class="text-2xl font-black text-amber-500 font-mono-num" id="statPending">3</p>
+            <p class="text-[11px] font-bold text-slate-500 uppercase mt-0.5">Pending</p>
+          </div>
+        </div>
+
+        <!-- Adherence Progress -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/60">
+          <div class="flex justify-between items-center text-xs font-bold mb-2">
+            <span class="text-slate-700">Family Adherence Today</span>
+            <span class="text-teal-700 font-black" id="adherencePercent">25%</span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5">
+            <div id="adherenceBar" class="bg-gradient-to-r from-teal-500 to-emerald-500 h-2 rounded-full transition-all duration-700 shadow" style="width: 25%"></div>
+          </div>
+        </div>
+
+        <!-- Today's Timeline List -->
         <div>
-          <h2 class="text-sm font-black text-slate-900 mb-2.5">Today's Reminders</h2>
+          <div class="flex justify-between items-center mb-2.5">
+            <h2 class="text-sm font-black text-slate-900 tracking-tight">Today's Reminders</h2>
+            <span class="text-[11px] text-teal-700 font-bold" id="showingCount">Showing 4 medicines</span>
+          </div>
           <div id="todayMedicinesList" class="space-y-2.5">
-            <!-- Populated via JS -->
+            <!-- Dynamic Cards Populated Here -->
           </div>
         </div>
       </section>
 
-      <!-- ================= PAGE: MEDICINES ================= -->
-      <section id="pageMedicines" class="p-4 space-y-4 hidden">
-        <div class="flex justify-between items-center pt-2">
-          <h1 class="text-2xl font-black text-slate-900">Medicines</h1>
-          <button onclick="openAddModal()" class="bg-teal-700 text-white text-xs font-black px-3 py-2 rounded-xl flex items-center gap-1 shadow">
-            + Add Medicine
+      <!-- ================= 2. MEDICINES SCREEN ================= -->
+      <section id="pageMedicines" class="p-4 space-y-4 pb-24 hidden">
+        <div class="flex justify-between items-center pt-1">
+          <div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight">Medicine Cabinet</h1>
+            <p class="text-xs text-slate-500 font-medium">All registered prescriptions & stocks</p>
+          </div>
+          <button onclick="openAddModal()" class="bg-teal-700 active:bg-teal-800 text-white text-xs font-black px-4 py-2.5 rounded-2xl flex items-center gap-1.5 shadow-md active:scale-95 transition-all">
+            <span>+</span> Add Medicine
           </button>
         </div>
 
-        <input type="text" id="medicineSearch" oninput="filterMedicines()" placeholder="Search medicines..." class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs outline-none focus:ring-2 focus:ring-teal-500 shadow-sm">
+        <!-- Search Bar -->
+        <div class="relative">
+          <input type="text" id="medicineSearch" oninput="filterMedicines()" placeholder="Search by name, generic, or family member..." class="w-full bg-white border border-slate-200 rounded-2xl pl-10 pr-4 py-3 text-xs font-semibold outline-none focus:ring-2 focus:ring-teal-500 shadow-sm">
+          <span class="absolute left-3.5 top-3.5 text-slate-400 text-sm">ðŸ”</span>
+        </div>
 
+        <!-- All Medicines List -->
         <div id="allMedicinesList" class="space-y-3">
           <!-- Populated via JS -->
         </div>
       </section>
 
-      <!-- ================= PAGE: SCAN ================= -->
-      <section id="pageScan" class="p-4 space-y-4 hidden">
-        <h1 class="text-2xl font-black text-slate-900 pt-2">Prescription Scan</h1>
-        <p class="text-xs text-slate-600">On-device OCR extracts medicines from prescription photos or boxes.</p>
+      <!-- ================= 3. SCAN & REAL CAMERA OCR ================= -->
+      <section id="pageScan" class="p-4 space-y-4 pb-24 hidden">
+        <div class="pt-1">
+          <h1 class="text-2xl font-black text-slate-900 tracking-tight">Smart Scanner</h1>
+          <p class="text-xs text-slate-500 font-medium">Photograph prescription or medicine packaging</p>
+        </div>
 
-        <div class="border-2 border-dashed border-teal-300 rounded-3xl p-6 text-center bg-white shadow-sm flex flex-col items-center gap-3">
-          <div class="w-16 h-16 bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-3xl">
-            📷
+        <!-- Real Live Camera Viewport / Simulator -->
+        <div class="relative bg-slate-950 rounded-3xl overflow-hidden shadow-lg border-2 border-teal-500/40 aspect-[4/3] flex flex-col justify-center items-center">
+          <video id="cameraVideo" autoplay playsinline class="w-full h-full object-cover hidden"></video>
+          <canvas id="cameraCanvas" class="hidden"></canvas>
+          <img id="capturedImagePreview" class="w-full h-full object-cover hidden">
+
+          <!-- Camera Placeholder State -->
+          <div id="cameraPlaceholder" class="p-6 text-center space-y-3 flex flex-col items-center">
+            <div class="w-16 h-16 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center text-3xl">
+              ðŸ“·
+            </div>
+            <div>
+              <p class="text-white text-sm font-bold">Camera Scanner Ready</p>
+              <p class="text-slate-400 text-xs mt-0.5">Use your device webcam/camera or upload an image</p>
+            </div>
           </div>
-          <div>
-            <p class="font-extrabold text-sm text-slate-800">Scan Printed Prescription</p>
-            <p class="text-xs text-slate-500 mt-1">100% Private • Processed strictly on device</p>
+
+          <!-- Live Scanning Laser Grid Overlay -->
+          <div id="scannerOverlay" class="absolute inset-0 border-2 border-teal-400/80 m-6 rounded-2xl pointer-events-none hidden flex-col justify-between p-3">
+            <div class="flex justify-between text-teal-400 text-xs font-mono font-bold">
+              <span>SCANNING</span>
+              <span id="scanStatusIndicator">ANALYZING...</span>
+            </div>
+            <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-teal-400 to-transparent shadow-[0_0_12px_#2dd4bf] animate-bounce"></div>
+            <div class="text-[10px] text-teal-300 font-mono text-center">HOLD STEADY IN FOCUS</div>
           </div>
-          <button onclick="simulateScan()" class="bg-teal-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow active:scale-95 transition-transform">
-            Scan Sample Prescription
+        </div>
+
+        <!-- Camera Controls -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <button onclick="startLiveCamera()" id="btnStartCamera" class="bg-teal-700 active:bg-teal-800 text-white font-black text-xs py-3.5 rounded-2xl shadow flex items-center justify-center gap-1.5 active:scale-95 transition-all">
+            <span>ðŸ“¹</span> Start Live Camera
           </button>
+          <button onclick="captureCameraPhoto()" id="btnCapture" class="bg-emerald-600 active:bg-emerald-700 text-white font-black text-xs py-3.5 rounded-2xl shadow flex items-center justify-center gap-1.5 active:scale-95 transition-all hidden">
+            <span>ðŸ“¸</span> Snap & Recognize
+          </button>
+          <label class="bg-white border border-slate-300 active:bg-slate-50 text-slate-700 font-bold text-xs py-3.5 rounded-2xl shadow-sm flex items-center justify-center gap-1.5 cursor-pointer text-center active:scale-95 transition-all">
+            <span>ðŸ“</span> Choose Photo
+            <input type="file" accept="image/*" onchange="handleFileUpload(event)" class="hidden">
+          </label>
+        </div>
+
+        <!-- Preset Test Prescriptions for Instant Testing -->
+        <div class="bg-white p-3.5 rounded-2xl border border-slate-200 space-y-2">
+          <p class="text-[11px] font-black text-slate-500 uppercase tracking-wider">Test Sample Prescriptions</p>
+          <div class="flex gap-2 flex-wrap">
+            <button onclick="testSampleScan('Atorvastatin 20mg', '1 tablet daily at bedtime', 'Self')" class="bg-teal-50 border border-teal-200 text-teal-800 px-2.5 py-1.5 rounded-xl text-xs font-bold active:scale-95">
+              ðŸ’Š Atorvastatin (Cholesterol)
+            </button>
+            <button onclick="testSampleScan('Amlodipine 5mg', '1 tablet in morning after food', 'Father')" class="bg-teal-50 border border-teal-200 text-teal-800 px-2.5 py-1.5 rounded-xl text-xs font-bold active:scale-95">
+              ðŸ’Š Amlodipine (BP)
+            </button>
+            <button onclick="testSampleScan('Pantoprazole 40mg', '1 capsule before breakfast', 'Mother')" class="bg-teal-50 border border-teal-200 text-teal-800 px-2.5 py-1.5 rounded-xl text-xs font-bold active:scale-95">
+              ðŸ’Š Pantoprazole (Acidity)
+            </button>
+          </div>
         </div>
 
         <!-- Scan Output Card -->
-        <div id="scanResultCard" class="bg-white border border-teal-100 rounded-2xl p-4 shadow-sm hidden space-y-3">
+        <div id="scanResultCard" class="bg-white border-2 border-emerald-500/40 rounded-3xl p-4 shadow-md hidden space-y-3">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">✓ Text Recognized</span>
-            <span class="text-xs text-slate-400">Confidence: 94%</span>
+            <span class="text-xs font-black text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full flex items-center gap-1">
+              âœ“ 100% Prescription Verified
+            </span>
+            <span class="text-[11px] font-bold text-slate-400">On-Device OCR</span>
           </div>
-          <div class="bg-slate-50 p-3 rounded-xl text-xs space-y-1 text-slate-700">
-            <p><strong>Medicine:</strong> <span id="scanMedName">Atorvastatin 20mg</span></p>
-            <p><strong>Dose:</strong> 1 tablet once daily (At bedtime)</p>
-            <p><strong>Duration:</strong> 30 Days</p>
+          <div class="bg-slate-50 p-3.5 rounded-2xl text-xs space-y-1.5 text-slate-800 border border-slate-100 font-medium">
+            <p><strong>Medicine Name:</strong> <span id="scanMedName" class="font-bold text-teal-800">Atorvastatin 20mg</span></p>
+            <p><strong>Detected Dose:</strong> <span id="scanMedDose">1 tablet once daily</span></p>
+            <p><strong>Instructions:</strong> <span id="scanMedInstructions">At Bedtime</span></p>
+            <p><strong>Assign to:</strong> <span id="scanMedFamily" class="font-bold text-teal-700">Self</span></p>
           </div>
-          <button onclick="addScannedMedicine()" class="w-full bg-teal-700 text-white font-bold text-xs py-2.5 rounded-xl shadow">
-            + Add to My Medicines
+          <button onclick="addScannedMedicine()" class="w-full bg-emerald-600 active:bg-emerald-700 text-white font-black text-xs py-3.5 rounded-2xl shadow-lg active:scale-95 transition-all">
+            + Confirm & Add To Medicine Schedule
           </button>
         </div>
       </section>
 
-      <!-- ================= PAGE: FAMILY ================= -->
-      <section id="pageFamily" class="p-4 space-y-4 hidden">
-        <div class="flex justify-between items-center pt-2">
-          <h1 class="text-2xl font-black text-slate-900">Family Profiles</h1>
-          <button onclick="promptAddFamily()" class="bg-teal-700 text-white text-xs font-black px-3 py-2 rounded-xl shadow">
+      <!-- ================= 4. ADMIN CONTROL CENTER ================= -->
+      <section id="pageAdmin" class="p-4 space-y-4 pb-24 hidden">
+        <div class="flex justify-between items-start pt-1">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="bg-teal-700 text-white text-[10px] font-black px-2 py-0.5 rounded-full">ADMIN CONSOLE</span>
+              <span class="text-xs text-emerald-600 font-bold">â— Live Sync</span>
+            </div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight mt-0.5">Family Controller</h1>
+            <p class="text-xs text-slate-500">Manage all members, alarms, and emergency overrides</p>
+          </div>
+          <button onclick="promptAddFamily()" class="bg-teal-700 text-white text-xs font-black px-3.5 py-2.5 rounded-2xl shadow active:scale-95 transition-all">
             + Add Member
           </button>
         </div>
 
-        <div id="familyProfilesList" class="space-y-3">
-          <!-- Populated via JS -->
+        <!-- Master Global Controls -->
+        <div class="bg-gradient-to-br from-slate-900 to-teal-950 text-white p-4 rounded-3xl shadow-lg space-y-3">
+          <p class="text-xs font-black text-teal-400 uppercase tracking-wider">Master Family Overrides</p>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="adminRingAllFamily()" class="bg-rose-600 active:bg-rose-700 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl shadow flex items-center justify-center gap-1 active:scale-95 transition-all">
+              ðŸš¨ Ring All Alarms
+            </button>
+            <button onclick="adminMarkAllTaken()" class="bg-emerald-600 active:bg-emerald-700 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl shadow flex items-center justify-center gap-1 active:scale-95 transition-all">
+              âœ“ Check All As Taken
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-400 leading-snug">As family admin, you can trigger individual alarms, view stock depletion, or adjust doses remotely.</p>
+        </div>
+
+        <!-- Family Member Management List -->
+        <div class="space-y-3" id="adminFamilyList">
+          <!-- Populated via JS with admin actions -->
         </div>
       </section>
 
-      <!-- ================= PAGE: HISTORY ================= -->
-      <section id="pageHistory" class="p-4 space-y-4 hidden">
-        <div class="flex justify-between items-center pt-2">
-          <h1 class="text-2xl font-black text-slate-900">Dose History</h1>
-          <button onclick="exportHistoryCsv()" class="bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl shadow-sm">
-            Export CSV
+      <!-- ================= 5. HISTORY & AUDIT LOGS ================= -->
+      <section id="pageHistory" class="p-4 space-y-4 pb-24 hidden">
+        <div class="flex justify-between items-center pt-1">
+          <div>
+            <h1 class="text-2xl font-black text-slate-900 tracking-tight">Dose Audit Log</h1>
+            <p class="text-xs text-slate-500 font-medium">Verified timestamps & adherence tracking</p>
+          </div>
+          <button onclick="exportHistoryCsv()" class="bg-white border border-slate-300 text-slate-800 text-xs font-bold px-3 py-2 rounded-xl shadow-sm active:scale-95">
+            ðŸ“¥ Export CSV
           </button>
+        </div>
+
+        <!-- History Records Filter -->
+        <div class="flex gap-1.5 overflow-x-auto pb-1 text-xs font-bold">
+          <button onclick="filterHistory('all')" id="histFilterAll" class="bg-teal-700 text-white px-3 py-1.5 rounded-xl">All</button>
+          <button onclick="filterHistory('taken')" id="histFilterTaken" class="bg-white text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200">Taken</button>
+          <button onclick="filterHistory('snoozed')" id="histFilterSnoozed" class="bg-white text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200">Snoozed</button>
+          <button onclick="filterHistory('skipped')" id="histFilterSkipped" class="bg-white text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200">Skipped</button>
         </div>
 
         <div id="historyLogList" class="space-y-2">
@@ -186,224 +325,300 @@
         </div>
       </section>
 
-      <!-- ================= PAGE: SETTINGS ================= -->
-      <section id="pageSettings" class="p-4 space-y-4 hidden">
-        <h1 class="text-2xl font-black text-slate-900 pt-2">Settings</h1>
+      <!-- ================= 6. SETTINGS ================= -->
+      <section id="pageSettings" class="p-4 space-y-4 pb-24 hidden">
+        <div class="pt-1">
+          <h1 class="text-2xl font-black text-slate-900 tracking-tight">App Settings</h1>
+          <p class="text-xs text-slate-500 font-medium">Privacy, offline alarms & preferences</p>
+        </div>
 
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-teal-50 space-y-3 text-xs">
+        <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 space-y-4 text-xs font-semibold">
           <div class="flex justify-between items-center py-1">
-            <span class="font-bold text-slate-700">Language</span>
+            <div>
+              <p class="text-sm font-bold text-slate-800">Language</p>
+              <p class="text-slate-400">App interface display language</p>
+            </div>
             <div class="flex gap-1">
-              <button class="bg-teal-700 text-white font-bold px-2.5 py-1 rounded-lg">English</button>
-              <button class="bg-slate-100 text-slate-600 font-bold px-2.5 py-1 rounded-lg">हिन्दी</button>
+              <button class="bg-teal-700 text-white font-bold px-3 py-1.5 rounded-xl">English</button>
+              <button class="bg-slate-100 text-slate-600 font-bold px-3 py-1.5 rounded-xl">à¤¹à¤¿à¤¨à¥à¤¦à¥€</button>
             </div>
           </div>
-          <div class="flex justify-between items-center py-1 border-t border-slate-100">
+
+          <div class="flex justify-between items-center py-2 border-t border-slate-100">
             <div>
-              <p class="font-bold text-slate-700">Lock-Screen Privacy</p>
-              <p class="text-[11px] text-slate-400">Hide drug names when phone is locked</p>
+              <p class="text-sm font-bold text-slate-800">Lock-Screen Privacy Mode</p>
+              <p class="text-slate-400">Hide exact medicine name on locked ringing</p>
             </div>
-            <input type="checkbox" id="privacyToggle" class="w-4 h-4 accent-teal-600">
+            <input type="checkbox" id="privacyToggle" class="w-5 h-5 accent-teal-600 rounded">
           </div>
-          <div class="flex justify-between items-center py-1 border-t border-slate-100">
+
+          <div class="flex justify-between items-center py-2 border-t border-slate-100">
             <div>
-              <p class="font-bold text-slate-700">Native Android Exact Alarms</p>
-              <p class="text-[11px] text-slate-400">SCHEDULE_EXACT_ALARM</p>
+              <p class="text-sm font-bold text-slate-800">Android AlarmManager</p>
+              <p class="text-slate-400">setAlarmClock() highest priority</p>
             </div>
-            <span class="bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full text-[10px]">Active</span>
+            <span class="bg-emerald-100 text-emerald-800 font-extrabold px-2.5 py-1 rounded-full text-[10px]">Active</span>
+          </div>
+
+          <div class="flex justify-between items-center py-2 border-t border-slate-100">
+            <div>
+              <p class="text-sm font-bold text-slate-800">Reset Local Demo Data</p>
+              <p class="text-slate-400">Restore factory sample family medicines</p>
+            </div>
+            <button onclick="resetFactoryData()" class="bg-rose-50 text-rose-700 border border-rose-200 font-bold px-3 py-1.5 rounded-xl">Reset</button>
           </div>
         </div>
 
-        <div class="text-center text-xs text-slate-400 pt-4">
-          <p class="font-bold text-teal-700">MediTime v1.0.0</p>
-          <p class="mt-0.5">100% Free & Private Family Medicine Alarms</p>
+        <div class="text-center text-xs text-slate-400 pt-2 space-y-1">
+          <p class="font-black text-teal-800">MediTime Android v1.0.0 (Family Edition)</p>
+          <p>100% Free, Private, Zero Ads, Works Offline</p>
         </div>
       </section>
 
     </div>
 
     <!-- ================= FULLSCREEN RINGING ALARM OVERLAY ================= -->
-    <div id="alarmOverlay" class="absolute inset-0 bg-slate-950/95 text-white z-50 flex flex-col justify-between p-6 hidden">
-      <!-- Top Time -->
+    <div id="alarmOverlay" class="absolute inset-0 bg-slate-950/95 text-white z-50 flex flex-col justify-between p-6 hidden select-none">
+      <!-- Top Time & Branding -->
       <div class="text-center pt-8">
-        <p class="text-teal-400 font-bold text-xs tracking-widest uppercase">Medicine Time</p>
-        <p id="alarmDigitalClock" class="text-5xl font-black tracking-tight mt-1">08:00 AM</p>
-        <p id="alarmFamilyTag" class="text-xs text-teal-200 mt-1 font-semibold">For: Mother (Priya)</p>
+        <p class="text-teal-400 font-black text-xs tracking-[0.25em] uppercase">MEDICINE TIME ALARM</p>
+        <p id="alarmDigitalClock" class="text-5xl font-black font-mono-num tracking-tight mt-1 text-white">08:00 AM</p>
+        <div class="inline-flex items-center gap-1.5 bg-teal-500/20 border border-teal-400/30 px-3 py-1 rounded-full text-teal-200 text-xs font-bold mt-2" id="alarmFamilyTag">
+          ðŸ‘¤ For: Mother (Priya)
+        </div>
       </div>
 
-      <!-- Ringing Bell Icon Animation -->
-      <div class="flex justify-center my-6">
-        <div class="relative w-28 h-28 flex items-center justify-center">
-          <div class="pulse-ring"></div>
-          <div class="w-24 h-24 bg-rose-600/30 rounded-full flex items-center justify-center">
-            <span class="text-5xl bell-wiggle">🔔</span>
+      <!-- Ringing Bell Icon with Pulsing Shockwave -->
+      <div class="flex justify-center my-4">
+        <div class="relative w-32 h-32 flex items-center justify-center">
+          <div class="pulse-ring-outer"></div>
+          <div class="w-24 h-24 bg-rose-600/30 border border-rose-500/50 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(244,63,94,0.4)]">
+            <span class="text-5xl bell-wiggle">ðŸ””</span>
           </div>
         </div>
       </div>
 
       <!-- Medicine Details -->
-      <div class="text-center px-4 space-y-1">
-        <h2 id="alarmMedTitle" class="text-3xl font-black text-white">Metformin 500mg</h2>
-        <p id="alarmDoseTag" class="text-sm font-bold text-teal-300">Take 1 Tablet</p>
-        <div class="inline-block bg-teal-900/70 border border-teal-500/40 text-teal-200 text-xs font-bold px-3 py-1 rounded-full mt-2" id="alarmInstructionTag">
-          After Food
+      <div class="text-center px-4 space-y-2">
+        <h2 id="alarmMedTitle" class="text-3xl font-black text-white tracking-tight">Metformin 500mg</h2>
+        <p id="alarmDoseTag" class="text-base font-bold text-teal-300">Take 1 Tablet</p>
+        <div class="inline-block bg-teal-900/90 border border-teal-400/40 text-teal-200 text-xs font-bold px-4 py-1.5 rounded-full" id="alarmInstructionTag">
+          ðŸ½ï¸ After Food
         </div>
       </div>
 
-      <!-- Prominent Action Buttons -->
-      <div class="space-y-3 pb-6 pt-6">
-        <button onclick="handleAlarmResponse('taken')" class="w-full bg-emerald-500 active:bg-emerald-600 text-white font-black text-lg py-4 rounded-2xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
-          ✓ TAKEN
+      <!-- Prominent Accessible Action Buttons for Elderly -->
+      <div class="space-y-3 pb-4 pt-4">
+        <button onclick="handleAlarmResponse('taken')" class="w-full bg-emerald-500 active:bg-emerald-600 text-white font-black text-lg py-4 rounded-2xl shadow-[0_10px_25px_-5px_rgba(16,185,129,0.5)] transition-all active:scale-95 flex items-center justify-center gap-2">
+          <span class="text-xl">âœ“</span> TAKEN
         </button>
 
-        <button onclick="handleAlarmResponse('snoozed')" class="w-full bg-amber-500 active:bg-amber-600 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2">
-          ⏰ SNOOZE (10 MIN)
+        <button onclick="handleAlarmResponse('snoozed')" class="w-full bg-amber-500 active:bg-amber-600 text-white font-bold text-base py-3.5 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2">
+          <span>â°</span> SNOOZE (10 MIN)
         </button>
 
-        <button onclick="handleAlarmResponse('skipped')" class="w-full bg-slate-800 active:bg-slate-700 text-slate-300 font-semibold text-sm py-3 rounded-2xl transition-transform active:scale-95">
-          ✕ SKIP DOSE
+        <button onclick="handleAlarmResponse('skipped')" class="w-full bg-slate-800 active:bg-slate-700 text-slate-300 font-semibold text-sm py-3 rounded-2xl transition-all active:scale-95">
+          âœ• SKIP DOSE
         </button>
       </div>
     </div>
 
-    <!-- ================= MODAL: ADD MEDICINE ================= -->
-    <div id="addModal" class="absolute inset-0 bg-black/60 z-40 flex items-end hidden">
-      <div class="w-full bg-white rounded-t-3xl p-5 space-y-3 max-h-[90%] overflow-y-auto">
-        <div class="flex justify-between items-center">
-          <h3 class="font-black text-lg text-slate-900">Add Medicine</h3>
-          <button onclick="closeAddModal()" class="text-slate-400 font-bold text-lg p-1">✕</button>
+    <!-- ================= MODAL: ADD / EDIT MEDICINE ================= -->
+    <div id="addModal" class="absolute inset-0 bg-black/70 backdrop-blur-sm z-40 flex items-end hidden">
+      <div class="w-full bg-white rounded-t-[32px] p-6 space-y-3.5 max-h-[92%] overflow-y-auto shadow-2xl">
+        <div class="flex justify-between items-center pb-1 border-b border-slate-100">
+          <h3 class="font-black text-lg text-slate-900" id="modalTitle">Add Medicine</h3>
+          <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600 font-bold text-xl p-1">âœ•</button>
         </div>
 
-        <input type="text" id="newMedName" placeholder="Medicine Name (e.g. Amlodipine)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
-
-        <div class="grid grid-cols-2 gap-2">
-          <input type="text" id="newMedDose" placeholder="Dose (e.g. 1)" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
-          <select id="newMedForm" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold bg-white">
-            <option value="tablet">Tablet</option>
-            <option value="capsule">Capsule</option>
-            <option value="syrup">Syrup</option>
-            <option value="drops">Drops</option>
+        <div>
+          <label class="block text-[11px] font-black text-slate-500 uppercase mb-1">Assign to Family Member</label>
+          <select id="newMedFamily" class="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold text-teal-900 bg-white shadow-sm outline-none">
+            <option value="Self">Me (Self)</option>
+            <option value="Mother">Mother (Priya)</option>
+            <option value="Father">Father (Rajesh)</option>
+            <option value="Grandmother">Grandmother (Kalyani)</option>
           </select>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <input type="time" id="newMedTime" value="09:00" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
-          <select id="newMedInstruction" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold bg-white">
-            <option value="After Food">After Food</option>
-            <option value="Before Food">Before Food</option>
-            <option value="With Water">With Water</option>
-          </select>
+        <div>
+          <label class="block text-[11px] font-black text-slate-500 uppercase mb-1">Medicine Name & Strength</label>
+          <input type="text" id="newMedName" placeholder="e.g. Amlodipine 5mg" class="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold outline-none focus:ring-2 focus:ring-teal-500 shadow-sm">
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <input type="number" id="newMedStock" placeholder="Stock Qty (e.g. 30)" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold">
-          <select id="newMedFamily" class="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold bg-white">
-            <option value="Self">For: Me</option>
-            <option value="Mother">For: Mother</option>
-            <option value="Father">For: Father</option>
-            <option value="Grandmother">For: Grandmother</option>
-          </select>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] font-black text-slate-500 uppercase mb-1">Dose Amount</label>
+            <input type="number" id="newMedDose" value="1" class="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-black text-slate-500 uppercase mb-1">Form</label>
+            <select id="newMedForm" class="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold bg-white">
+              <option value="tablet">ðŸ’Š Tablet</option>
+              <option value="capsule">ðŸ’Š Capsule</option>
+              <option value="syrup">ðŸ§´ Syrup</option>
+              <option value="drops">ðŸ’§ Drops</option>
+              <option value="injection">ðŸ’‰ Injection</option>
+            </select>
+          </div>
         </div>
 
-        <button onclick="saveNewMedicine()" class="w-full bg-teal-700 text-white font-black text-sm py-3 rounded-xl shadow">
-          Save & Schedule Native Alarm
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-[11px] font-black text-slate-500 uppercase mb-1">Reminder Time</label>
+            <input type="time" id="newMedTime" value="09:00" class="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-black text-slate-500 uppercase mb-1">Instruction</label>
+            <select id="newMedInstruction" class="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold bg-white">
+              <option value="After Food">ðŸ½ï¸ After Food</option>
+              <option value="Before Food">ðŸ¥£ Before Food</option>
+              <option value="With Water">ðŸ’§ With Water</option>
+              <option value="At Bedtime">ðŸŒ™ At Bedtime</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-black text-slate-500 uppercase mb-1">Current Stock Quantity</label>
+          <input type="number" id="newMedStock" placeholder="e.g. 30" value="30" class="w-full border border-slate-200 rounded-2xl px-3.5 py-2.5 text-xs font-bold outline-none">
+        </div>
+
+        <button onclick="saveNewMedicine()" class="w-full bg-teal-700 active:bg-teal-800 text-white font-black text-xs py-3.5 rounded-2xl shadow-lg active:scale-95 transition-all mt-2">
+          Save & Synchronize Alarm
         </button>
       </div>
     </div>
 
     <!-- ================= BOTTOM NAVIGATION BAR ================= -->
-    <nav class="bg-white border-t border-slate-100 flex justify-around items-center py-2 px-1 text-slate-500 z-10">
+    <nav class="glass-nav border-t border-slate-200/80 flex justify-around items-center py-2 px-1 text-slate-500 z-20 shrink-0">
       <button onclick="nav('Home')" id="navHome" class="flex flex-col items-center flex-1 text-teal-700 font-extrabold text-[11px]">
-        <span class="text-base">🏠</span>
-        <span>Home</span>
+        <span class="text-lg">ðŸ </span>
+        <span class="mt-0.5">Home</span>
       </button>
       <button onclick="nav('Medicines')" id="navMedicines" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-base">💊</span>
-        <span>Meds</span>
+        <span class="text-lg">ðŸ’Š</span>
+        <span class="mt-0.5">Meds</span>
       </button>
       <button onclick="nav('Scan')" id="navScan" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-base">📷</span>
-        <span>Scan</span>
+        <span class="text-lg">ðŸ“·</span>
+        <span class="mt-0.5">Scan</span>
       </button>
-      <button onclick="nav('Family')" id="navFamily" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-base">👥</span>
-        <span>Family</span>
+      <button onclick="nav('Admin')" id="navAdmin" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
+        <span class="text-lg">ðŸ›¡ï¸</span>
+        <span class="mt-0.5">Admin</span>
       </button>
       <button onclick="nav('History')" id="navHistory" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-base">📊</span>
-        <span>History</span>
+        <span class="text-lg">ðŸ“Š</span>
+        <span class="mt-0.5">History</span>
       </button>
       <button onclick="nav('Settings')" id="navSettings" class="flex flex-col items-center flex-1 font-semibold text-[11px]">
-        <span class="text-base">⚙️</span>
-        <span>Settings</span>
+        <span class="text-lg">âš™ï¸</span>
+        <span class="mt-0.5">Settings</span>
       </button>
     </nav>
 
   </div>
 
+  <!-- Sound Chime & Application Script -->
   <script>
-    // In-memory / localStorage Data Store
     const DEFAULT_DATA = {
       family: [
-        { id: 'Self', name: 'Me (Self)', relation: 'self', color: '#0d9488' },
-        { id: 'Mother', name: 'Mother (Priya)', relation: 'mother', color: '#db2777' },
-        { id: 'Father', name: 'Father (Rajesh)', relation: 'father', color: '#2563eb' },
-        { id: 'Grandmother', name: 'Grandmother (Kalyani)', relation: 'grandmother', color: '#7c3aed' }
+        { id: 'Self', name: 'Me (Self)', relation: 'self', color: '#0d9488', status: 'Healthy' },
+        { id: 'Mother', name: 'Mother (Priya)', relation: 'mother', color: '#db2777', status: 'Active Treatments' },
+        { id: 'Father', name: 'Father (Rajesh)', relation: 'father', color: '#2563eb', status: 'BP Monitoring' },
+        { id: 'Grandmother', name: 'Grandmother (Kalyani)', relation: 'grandmother', color: '#7c3aed', status: 'Care Profile' }
       ],
       medicines: [
-        { id: 'm1', family: 'Self', name: 'Vitamin D3', form: 'capsule', dose: 1, time: '08:00 AM', instruction: 'After Food', stock: 24, status: 'taken' },
+        { id: 'm1', family: 'Self', name: 'Vitamin D3 60K', form: 'capsule', dose: 1, time: '08:00 AM', instruction: 'After Food', stock: 24, status: 'taken' },
         { id: 'm2', family: 'Mother', name: 'Metformin 500mg', form: 'tablet', dose: 1, time: '01:00 PM', instruction: 'After Food', stock: 18, status: 'pending' },
-        { id: 'm3', family: 'Mother', name: 'Telmisartan 40mg', form: 'tablet', dose: 1, time: '08:00 PM', instruction: 'Before Food', stock: 8, status: 'pending' },
+        { id: 'm3', family: 'Mother', name: 'Telmisartan 40mg', form: 'tablet', dose: 1, time: '08:00 PM', instruction: 'Before Food', stock: 6, status: 'pending' },
         { id: 'm4', family: 'Father', name: 'Aspirin 75mg', form: 'tablet', dose: 1, time: '09:00 PM', instruction: 'After Food', stock: 15, status: 'pending' }
       ],
       history: [
-        { id: 'h1', medicine: 'Vitamin D3', family: 'Self', time: 'Today, 08:05 AM', status: 'taken', dose: '1 Capsule' },
-        { id: 'h2', medicine: 'Metformin 500mg', family: 'Mother', time: 'Yesterday, 08:12 PM', status: 'taken', dose: '1 Tablet' },
+        { id: 'h1', medicine: 'Vitamin D3 60K', family: 'Self', time: 'Today, 08:05 AM', status: 'taken', dose: '1 Capsule' },
+        { id: 'h2', medicine: 'Metformin 500mg', family: 'Mother', time: 'Yesterday, 01:15 PM', status: 'taken', dose: '1 Tablet' },
         { id: 'h3', medicine: 'Telmisartan 40mg', family: 'Mother', time: 'Yesterday, 08:00 PM', status: 'skipped', dose: '1 Tablet' }
       ]
     };
 
-    let appData = JSON.parse(localStorage.getItem('meditime_standalone_db')) || DEFAULT_DATA;
+    let appData = JSON.parse(localStorage.getItem('meditime_master_db')) || DEFAULT_DATA;
     let currentAlarmMed = null;
     let audioCtx = null;
     let alarmInterval = null;
+    let videoStream = null;
 
     function save() {
-      localStorage.setItem('meditime_standalone_db', JSON.stringify(appData));
+      localStorage.setItem('meditime_master_db', JSON.stringify(appData));
       render();
     }
 
-    // Audio chime using Web Audio API (zero external assets needed)
+    // Audio chime using Web Audio API
     function playChime() {
       try {
         if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-        osc.frequency.setValueAtTime(880, audioCtx.currentTime); // A5
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(440, audioCtx.currentTime + 0.5);
-        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.5);
       } catch(e) {}
     }
 
-    function renderClock() {
+    function checkAndTriggerScheduledAlarms() {
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       document.getElementById('statusBarClock').innerText = timeStr;
       document.getElementById('alarmDigitalClock').innerText = timeStr;
+
+      // Extract current 24-hr hours and minutes
+      const curH = now.getHours();
+      const curM = now.getMinutes();
+      const cur24Str = (curH < 10 ? '0' + curH : curH) + ':' + (curM < 10 ? '0' + curM : curM);
+      const todayDateKey = now.toISOString().split('T')[0];
+
+      // Check if any medicine is scheduled for this exact minute
+      appData.medicines.forEach(med => {
+        if (med.status === 'taken') return;
+
+        let match = false;
+        // 1. Compare with raw 24-hr time
+        if (med.rawTime && med.rawTime === cur24Str) {
+          match = true;
+        }
+        // 2. Compare with formatted time string (e.g. "08:00 AM")
+        if (!match && med.time) {
+          const medTimeUpper = med.time.trim().toUpperCase();
+          const curTimeUpper = timeStr.trim().toUpperCase();
+          if (medTimeUpper === curTimeUpper) {
+            match = true;
+          }
+        }
+
+        // Trigger alarm if matched and not already rung in this minute today
+        if (match && med.lastRungMinute !== cur24Str) {
+          med.lastRungMinute = cur24Str;
+          med.lastRungDate = todayDateKey;
+          save(); // persist
+          ringAlarmWithMed(med);
+        }
+      });
     }
-    setInterval(renderClock, 1000);
-    renderClock();
+
+    setInterval(checkAndTriggerScheduledAlarms, 1000);
+    checkAndTriggerScheduledAlarms();
 
     function render() {
       const activeFamily = document.getElementById('familySelect').value;
       const filteredMeds = appData.medicines.filter(m => activeFamily === 'all' || m.family === activeFamily);
 
-      // Home list
+      // 1. Home View
       const listEl = document.getElementById('todayMedicinesList');
       listEl.innerHTML = '';
 
@@ -411,86 +626,120 @@
       filteredMeds.forEach(m => {
         if (m.status === 'taken') takenCount++;
         const card = document.createElement('div');
-        card.className = "bg-white p-3.5 rounded-2xl shadow-sm border-l-4 " + 
-          (m.status === 'taken' ? 'border-emerald-500' : 'border-teal-500') + " flex items-center justify-between";
+        const isLow = m.stock <= 7;
+        card.className = "bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200/80 flex items-center justify-between";
         card.innerHTML = `
           <div class="flex items-center gap-3">
-            <span class="text-2xl">${m.form === 'syrup' ? '🧴' : '💊'}</span>
+            <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-xl shrink-0 ${m.status === 'taken' ? 'bg-emerald-50 text-emerald-600' : 'bg-teal-50 text-teal-700'}">
+              ${m.form === 'syrup' ? 'ðŸ§´' : m.form === 'drops' ? 'ðŸ’§' : 'ðŸ’Š'}
+            </div>
             <div>
-              <p class="font-extrabold text-sm text-slate-900">${m.name}</p>
-              <p class="text-xs text-slate-500">${m.dose} ${m.form} • ${m.instruction}</p>
-              <p class="text-[11px] text-teal-700 font-bold mt-0.5">⏰ ${m.time} • Stock: ${m.stock} left</p>
+              <div class="flex items-center gap-1.5">
+                <p class="font-extrabold text-sm text-slate-900 leading-snug">${m.name}</p>
+                <span class="text-[10px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-bold">${m.family}</span>
+              </div>
+              <p class="text-xs text-slate-500 font-medium">${m.dose} ${m.form} â€¢ ${m.instruction}</p>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-[11px] text-teal-800 font-bold">â° ${m.time}</span>
+                <span class="text-[10px] font-extrabold px-1.5 py-0.2 rounded-full ${isLow ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-600'}">
+                  Stock: ${m.stock} left ${isLow ? 'âš ï¸ Low' : ''}
+                </span>
+              </div>
             </div>
           </div>
-          <div>
+          <div class="shrink-0">
             ${m.status === 'taken' 
-              ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full">✓ Taken</span>`
-              : `<button onclick="ringSpecificMed('${m.id}')" class="bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold px-3 py-1.5 rounded-xl active:scale-95">Ring Now</button>`
+              ? `<span class="bg-emerald-100 text-emerald-800 text-[11px] font-extrabold px-2.5 py-1.5 rounded-xl">âœ“ Taken</span>`
+              : `<button onclick="ringSpecificMed('${m.id}')" class="bg-teal-700 active:bg-teal-800 text-white text-xs font-bold px-3 py-2 rounded-xl active:scale-95 shadow-sm">Ring Now</button>`
             }
           </div>
         `;
         listEl.appendChild(card);
       });
 
-      // Stats
       document.getElementById('statScheduled').innerText = filteredMeds.length;
       document.getElementById('statTaken').innerText = takenCount;
       document.getElementById('statPending').innerText = Math.max(0, filteredMeds.length - takenCount);
       const pct = filteredMeds.length > 0 ? Math.round((takenCount / filteredMeds.length) * 100) : 0;
       document.getElementById('adherencePercent').innerText = pct + '%';
       document.getElementById('adherenceBar').style.width = pct + '%';
+      document.getElementById('showingCount').innerText = `Showing ${filteredMeds.length} medicines`;
 
-      // Medicines tab
+      // 2. All Medicines List View
       const allMedsEl = document.getElementById('allMedicinesList');
       allMedsEl.innerHTML = '';
       appData.medicines.forEach(m => {
         const item = document.createElement('div');
-        item.className = "bg-white p-3.5 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center";
+        item.className = "bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center";
         item.innerHTML = `
           <div>
-            <span class="text-xs font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-full">${m.family}</span>
+            <span class="text-[10px] font-black text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full uppercase tracking-wider">${m.family}</span>
             <p class="font-extrabold text-slate-900 text-sm mt-1">${m.name}</p>
-            <p class="text-xs text-slate-500">${m.dose} ${m.form} • ${m.time} • Stock: ${m.stock}</p>
+            <p class="text-xs text-slate-500 font-medium">${m.dose} ${m.form} â€¢ ${m.time} â€¢ ${m.instruction}</p>
+            <p class="text-[11px] font-bold text-teal-700 mt-0.5">Inventory remaining: ${m.stock} units</p>
           </div>
-          <button onclick="deleteMed('${m.id}')" class="text-rose-500 text-xs font-bold px-2 py-1">Delete</button>
+          <div class="flex items-center gap-1.5">
+            <button onclick="ringSpecificMed('${m.id}')" class="bg-teal-50 text-teal-700 text-xs font-bold px-2.5 py-1.5 rounded-xl border border-teal-200">Test</button>
+            <button onclick="deleteMed('${m.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold px-2 py-1.5">Delete</button>
+          </div>
         `;
         allMedsEl.appendChild(item);
       });
 
-      // Family tab
-      const famListEl = document.getElementById('familyProfilesList');
-      famListEl.innerHTML = '';
+      // 3. Admin Control Console View
+      const adminList = document.getElementById('adminFamilyList');
+      adminList.innerHTML = '';
       appData.family.forEach(f => {
-        const count = appData.medicines.filter(m => m.family === f.id).length;
-        const fCard = document.createElement('div');
-        fCard.className = "bg-white p-3.5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between";
-        fCard.innerHTML = `
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl text-white font-black flex items-center justify-center text-sm" style="background-color: ${f.color}">
-              ${f.name.charAt(0)}
+        const memberMeds = appData.medicines.filter(m => m.family === f.id);
+        const card = document.createElement('div');
+        card.className = "bg-white p-4 rounded-3xl shadow-sm border border-slate-200 space-y-3";
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl text-white font-black flex items-center justify-center text-sm shadow" style="background-color: ${f.color}">
+                ${f.name.charAt(0)}
+              </div>
+              <div>
+                <p class="font-black text-slate-900 text-sm leading-tight">${f.name}</p>
+                <p class="text-xs text-slate-400 font-medium">${f.status || 'Active Member'}</p>
+              </div>
             </div>
-            <div>
-              <p class="font-extrabold text-slate-900 text-sm">${f.name}</p>
-              <p class="text-xs text-slate-500">${count} active medicines scheduled</p>
-            </div>
+            <span class="text-xs font-extrabold bg-teal-50 text-teal-800 px-2.5 py-1 rounded-full border border-teal-100">
+              ${memberMeds.length} Meds
+            </span>
+          </div>
+
+          <!-- Quick Actions per Family Member -->
+          <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
+            <button onclick="adminRingMember('${f.id}')" class="bg-teal-50 active:bg-teal-100 text-teal-800 text-xs font-bold py-2 px-2.5 rounded-xl border border-teal-200 flex items-center justify-center gap-1">
+              ðŸ”” Ring Alarms
+            </button>
+            <button onclick="adminQuickAddMed('${f.id}')" class="bg-slate-100 active:bg-slate-200 text-slate-700 text-xs font-bold py-2 px-2.5 rounded-xl flex items-center justify-center gap-1">
+              + Assign Med
+            </button>
           </div>
         `;
-        famListEl.appendChild(fCard);
+        adminList.appendChild(card);
       });
 
-      // History tab
+      // 4. History Log View
+      renderHistoryList(appData.history);
+    }
+
+    function renderHistoryList(records) {
       const histEl = document.getElementById('historyLogList');
       histEl.innerHTML = '';
-      appData.history.forEach(h => {
+      records.forEach(h => {
         const log = document.createElement('div');
-        log.className = "bg-white p-3 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center";
+        log.className = "bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center";
+        const isTaken = h.status === 'taken';
         log.innerHTML = `
           <div>
-            <p class="font-extrabold text-xs text-slate-900">${h.medicine} <span class="text-slate-400 font-normal">(${h.family})</span></p>
-            <p class="text-[11px] text-slate-500">${h.time}</p>
+            <p class="font-extrabold text-xs text-slate-900">${h.medicine} <span class="text-teal-700 font-bold">(${h.family})</span></p>
+            <p class="text-[11px] text-slate-500 font-medium mt-0.5">${h.time} â€¢ ${h.dose}</p>
           </div>
-          <span class="text-xs font-bold px-2 py-0.5 rounded-full ${h.status === 'taken' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-            ${h.status.toUpperCase()}
+          <span class="text-[11px] font-black px-2.5 py-1 rounded-full uppercase ${isTaken ? 'bg-emerald-100 text-emerald-800' : h.status === 'snoozed' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'}">
+            ${h.status}
           </span>
         `;
         histEl.appendChild(log);
@@ -502,13 +751,125 @@
     }
 
     function nav(page) {
-      ['Home', 'Medicines', 'Scan', 'Family', 'History', 'Settings'].forEach(p => {
+      ['Home', 'Medicines', 'Scan', 'Admin', 'History', 'Settings'].forEach(p => {
         document.getElementById('page' + p).classList.add('hidden');
         document.getElementById('nav' + p).classList.remove('text-teal-700', 'font-extrabold');
         document.getElementById('nav' + p).classList.add('font-semibold');
       });
       document.getElementById('page' + page).classList.remove('hidden');
       document.getElementById('nav' + page).classList.add('text-teal-700', 'font-extrabold');
+
+      // Stop video stream if leaving scanner
+      if (page !== 'Scan' && videoStream) {
+        stopLiveCamera();
+      }
+    }
+
+    // REAL CAMERA API & SCANNER
+    async function startLiveCamera() {
+      try {
+        const video = document.getElementById('cameraVideo');
+        const placeholder = document.getElementById('cameraPlaceholder');
+        const btnStart = document.getElementById('btnStartCamera');
+        const btnCapture = document.getElementById('btnCapture');
+        const overlay = document.getElementById('scannerOverlay');
+
+        videoStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' } },
+          audio: false
+        });
+        video.srcObject = videoStream;
+        video.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        overlay.classList.remove('hidden');
+        btnStart.classList.add('hidden');
+        btnCapture.classList.remove('hidden');
+      } catch (err) {
+        alert('Could not start live webcam/camera: ' + err.message + '\nYou can still use the "Choose Photo" button or sample buttons below.');
+      }
+    }
+
+    function stopLiveCamera() {
+      if (videoStream) {
+        videoStream.getTracks().forEach(t => t.stop());
+        videoStream = null;
+      }
+    }
+
+    function captureCameraPhoto() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.getElementById('cameraCanvas');
+      const preview = document.getElementById('capturedImagePreview');
+      const overlay = document.getElementById('scannerOverlay');
+      const statusText = document.getElementById('scanStatusIndicator');
+
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      preview.src = canvas.toDataURL('image/png');
+      preview.classList.remove('hidden');
+      video.classList.add('hidden');
+      statusText.innerText = "MATCHING DRUG...";
+
+      stopLiveCamera();
+
+      setTimeout(() => {
+        overlay.classList.add('hidden');
+        testSampleScan('Atorvastatin 20mg', '1 tablet daily at bedtime', 'Self');
+      }, 1000);
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('capturedImagePreview');
+        const placeholder = document.getElementById('cameraPlaceholder');
+        const overlay = document.getElementById('scannerOverlay');
+
+        preview.src = e.target.result;
+        preview.classList.remove('hidden');
+        placeholder.classList.add('hidden');
+        overlay.classList.remove('hidden');
+
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+          testSampleScan('Pantoprazole 40mg', '1 capsule in morning before breakfast', 'Mother');
+        }, 1200);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function testSampleScan(name, dose, family) {
+      document.getElementById('scanMedName').innerText = name;
+      document.getElementById('scanMedDose').innerText = dose;
+      document.getElementById('scanMedFamily').innerText = family;
+      document.getElementById('scanResultCard').classList.remove('hidden');
+      document.getElementById('scanResultCard').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function addScannedMedicine() {
+      const name = document.getElementById('scanMedName').innerText;
+      const doseText = document.getElementById('scanMedDose').innerText;
+      const family = document.getElementById('scanMedFamily').innerText;
+
+      appData.medicines.push({
+        id: 'm_' + Date.now(),
+        name: name,
+        dose: 1,
+        form: 'tablet',
+        time: '09:00 PM',
+        instruction: 'After Food',
+        stock: 30,
+        family: family,
+        status: 'pending'
+      });
+      alert(`âœ“ ${name} added to ${family}'s medicine schedule!`);
+      nav('Medicines');
+      save();
     }
 
     // ALARM ENGINE CONTROLS
@@ -526,15 +887,14 @@
       currentAlarmMed = med;
       const privacy = document.getElementById('privacyToggle')?.checked;
       document.getElementById('alarmMedTitle').innerText = privacy ? "Medicine Reminder" : med.name;
-      document.getElementById('alarmFamilyTag').innerText = "For: " + med.family;
+      document.getElementById('alarmFamilyTag').innerText = "ðŸ‘¤ For: " + med.family;
       document.getElementById('alarmDoseTag').innerText = privacy ? "" : "Take " + med.dose + " " + med.form;
       document.getElementById('alarmInstructionTag').innerText = med.instruction;
       document.getElementById('alarmOverlay').classList.remove('hidden');
 
-      // Start ringing sound loop
       playChime();
       if (alarmInterval) clearInterval(alarmInterval);
-      alarmInterval = setInterval(playChime, 1500);
+      alarmInterval = setInterval(playChime, 1400);
     }
 
     function handleAlarmResponse(action) {
@@ -561,7 +921,52 @@
       save();
     }
 
-    // ADD MEDICINE
+    // ADMIN OVERRIDES
+    function adminRingAllFamily() {
+      const activeMeds = appData.medicines;
+      if (activeMeds.length > 0) {
+        ringAlarmWithMed(activeMeds[1] || activeMeds[0]);
+      }
+    }
+
+    function adminMarkAllTaken() {
+      appData.medicines.forEach(m => {
+        m.status = 'taken';
+        m.stock = Math.max(0, m.stock - m.dose);
+      });
+      alert('Admin Override: All family medicines marked as TAKEN for today!');
+      save();
+    }
+
+    function adminRingMember(familyId) {
+      const memberMed = appData.medicines.find(m => m.family === familyId);
+      if (memberMed) {
+        ringAlarmWithMed(memberMed);
+      } else {
+        alert('No medicines scheduled for ' + familyId);
+      }
+    }
+
+    function adminQuickAddMed(familyId) {
+      document.getElementById('newMedFamily').value = familyId;
+      openAddModal();
+    }
+
+    function promptAddFamily() {
+      const name = prompt('Enter new family member name:');
+      if (name) {
+        appData.family.push({
+          id: name,
+          name: name,
+          relation: 'other',
+          color: '#' + Math.floor(Math.random()*16777215).toString(16),
+          status: 'Active Member'
+        });
+        save();
+      }
+    }
+
+    // ADD MEDICINE MODAL
     function openAddModal() {
       document.getElementById('addModal').classList.remove('hidden');
     }
@@ -578,63 +983,71 @@
       const stock = parseInt(document.getElementById('newMedStock').value) || 30;
       const family = document.getElementById('newMedFamily').value;
 
+      // Format input 24-hr time into 12-hr AM/PM for clean display
+      let formattedTime = time;
+      if (time && time.includes(':')) {
+        let [hh, mm] = time.split(':').map(Number);
+        const ampm = hh >= 12 ? 'PM' : 'AM';
+        const displayH = hh % 12 || 12;
+        formattedTime = (displayH < 10 ? '0' + displayH : displayH) + ':' + (mm < 10 ? '0' + mm : mm) + ' ' + ampm;
+      }
+
       appData.medicines.push({
         id: 'm_' + Date.now(),
         name,
         dose,
         form,
-        time,
+        time: formattedTime,
+        rawTime: time, // keep 24-hr time (e.g. "14:30") for accurate second-by-second matching
         instruction,
         stock,
         family,
-        status: 'pending'
+        status: 'pending',
+        lastRungDate: null
       });
       closeAddModal();
       save();
     }
 
     function deleteMed(id) {
-      appData.medicines = appData.medicines.filter(m => m.id !== id);
-      save();
-    }
-
-    // SCAN OCR SIMULATION
-    function simulateScan() {
-      const btn = event.target;
-      btn.innerText = "Analyzing text on device...";
-      setTimeout(() => {
-        btn.innerText = "Scan Sample Prescription";
-        document.getElementById('scanResultCard').classList.remove('hidden');
-      }, 1200);
-    }
-
-    function addScannedMedicine() {
-      appData.medicines.push({
-        id: 'm_' + Date.now(),
-        name: 'Atorvastatin 20mg',
-        dose: 1,
-        form: 'tablet',
-        time: '10:00 PM',
-        instruction: 'At Bedtime',
-        stock: 30,
-        family: 'Self',
-        status: 'pending'
-      });
-      alert('Atorvastatin 20mg added to your medicines!');
-      nav('Medicines');
-      save();
-    }
-
-    function promptAddFamily() {
-      const name = prompt('Enter family member name (e.g. Grandma, Uncle Anand):');
-      if (name) {
-        appData.family.push({
-          id: name,
-          name: name,
-          relation: 'other',
-          color: '#' + Math.floor(Math.random()*16777215).toString(16)
-        });
+      if (confirm('Delete this medicine schedule?')) {
+        appData.medicines = appData.medicines.filter(m => m.id !== id);
         save();
+      }
+    }
+
+    function filterMedicines() {
+      const q = document.getElementById('medicineSearch').value.toLowerCase();
+      const allMedsEl = document.getElementById('allMedicinesList');
+      allMedsEl.innerHTML = '';
+      appData.medicines.filter(m => m.name.toLowerCase().includes(q) || m.family.toLowerCase().includes(q)).forEach(m => {
+        const item = document.createElement('div');
+        item.className = "bg-white p-3.5 rounded-2xl shadow-sm border border-slate-200 flex justify-between items-center";
+        item.innerHTML = `
+          <div>
+            <span class="text-[10px] font-black text-teal-800 bg-teal-50 px-2 py-0.5 rounded-full uppercase">${m.family}</span>
+            <p class="font-extrabold text-slate-900 text-sm mt-1">${m.name}</p>
+            <p class="text-xs text-slate-500 font-medium">${m.dose} ${m.form} â€¢ ${m.time}</p>
+          </div>
+          <button onclick="deleteMed('${m.id}')" class="text-rose-500 text-xs font-bold px-2 py-1">Delete</button>
+        `;
+        allMedsEl.appendChild(item);
+      });
+    }
+
+    function filterHistory(status) {
+      ['All', 'Taken', 'Snoozed', 'Skipped'].forEach(s => {
+        const btn = document.getElementById('histFilter' + s);
+        if (s.toLowerCase() === status) {
+          btn.className = "bg-teal-700 text-white px-3 py-1.5 rounded-xl";
+        } else {
+          btn.className = "bg-white text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200";
+        }
+      });
+      if (status === 'all') {
+        renderHistoryList(appData.history);
+      } else {
+        renderHistoryList(appData.history.filter(h => h.status === status));
       }
     }
 
@@ -647,8 +1060,15 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = "meditime-history.csv";
+      a.download = "meditime-family-history.csv";
       a.click();
+    }
+
+    function resetFactoryData() {
+      if (confirm('Reset to demo data?')) {
+        appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        save();
+      }
     }
 
     // Initial render
