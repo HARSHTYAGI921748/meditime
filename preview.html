@@ -954,6 +954,18 @@
       playChime();
       if (alarmInterval) clearInterval(alarmInterval);
       alarmInterval = setInterval(playChime, 1400);
+
+      // Also trigger native test alarm if in APK so full screen & sound fire
+      if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.MediTimeAlarm) {
+        try {
+          window.Capacitor.Plugins.MediTimeAlarm.testAlarm({
+            medicineId: med.id,
+            medicineName: med.name,
+            familyMemberName: med.family,
+            dose: med.dose + ' ' + med.form
+          });
+        } catch(e) {}
+      }
     }
 
     function handleAlarmResponse(action) {
@@ -1025,6 +1037,54 @@
       }
     }
 
+    // Helper to invoke native Capacitor plugin if running inside Android APK
+    function callNativeScheduleAlarm(med) {
+      if (!window.Capacitor) return;
+      try {
+        const timeParts = (med.rawTime || parseTo24Hour(med.time) || "08:00").split(':').map(Number);
+        const target = new Date();
+        target.setHours(timeParts[0], timeParts[1], 0, 0);
+        let triggerTime = target.getTime();
+        if (triggerTime <= Date.now()) {
+          triggerTime += 86400000; // Next day
+        }
+
+        const alarmId = Math.abs(parseInt(med.id.replace(/\D/g, '').slice(-8)) || Math.floor(Math.random() * 899999 + 100000));
+        med.alarmId = alarmId;
+
+        // Bridge to native MediTimeAlarmPlugin
+        if (window.Capacitor.Plugins && window.Capacitor.Plugins.MediTimeAlarm) {
+          window.Capacitor.Plugins.MediTimeAlarm.scheduleAlarm({
+            alarmId: alarmId,
+            triggerTime: triggerTime,
+            medicineId: med.id,
+            medicineName: med.name,
+            familyMemberName: med.family,
+            dose: med.dose + ' ' + med.form,
+            instructions: med.instruction,
+            snoozeDuration: 10,
+            vibrationEnabled: true,
+            ringtone: 'default'
+          }).then(res => {
+            console.log('Native alarm scheduled successfully:', res);
+          }).catch(err => {
+            console.warn('Native alarm call failed:', err);
+          });
+        }
+      } catch (err) {
+        console.warn('callNativeScheduleAlarm error:', err);
+      }
+    }
+
+    function callNativeCancelAlarm(alarmId) {
+      if (!window.Capacitor || !alarmId) return;
+      try {
+        if (window.Capacitor.Plugins && window.Capacitor.Plugins.MediTimeAlarm) {
+          window.Capacitor.Plugins.MediTimeAlarm.cancelAlarm({ alarmId: alarmId });
+        }
+      } catch (err) {}
+    }
+
     // ADD MEDICINE MODAL
     function openAddModal() {
       document.getElementById('addModal').classList.remove('hidden');
@@ -1051,7 +1111,7 @@
         formattedTime = (displayH < 10 ? '0' + displayH : displayH) + ':' + (mm < 10 ? '0' + mm : mm) + ' ' + ampm;
       }
 
-      appData.medicines.push({
+      const newMedObj = {
         id: 'm_' + Date.now(),
         name,
         dose,
@@ -1063,7 +1123,11 @@
         family,
         status: 'pending',
         lastRungDate: null
-      });
+      };
+
+      appData.medicines.push(newMedObj);
+      callNativeScheduleAlarm(newMedObj);
+
       requestWebNotificationPermission();
       initAudio();
       closeAddModal();
@@ -1073,6 +1137,10 @@
 
     function deleteMed(id) {
       if (confirm('Delete this medicine schedule?')) {
+        const toDelete = appData.medicines.find(m => m.id === id);
+        if (toDelete && toDelete.alarmId) {
+          callNativeCancelAlarm(toDelete.alarmId);
+        }
         appData.medicines = appData.medicines.filter(m => m.id !== id);
         save();
       }
@@ -1133,8 +1201,19 @@
       }
     }
 
-    // Initial render
+    // Initial render and sync all existing medicines with native alarm manager
     render();
+
+    // Auto-sync all loaded medicines with Android native AlarmManager upon launch
+    if (window.Capacitor) {
+      setTimeout(() => {
+        appData.medicines.forEach(m => {
+          if (m.status !== 'taken') {
+            callNativeScheduleAlarm(m);
+          }
+        });
+      }, 1000);
+    }
   </script>
 </body>
 </html>
