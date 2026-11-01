@@ -174,9 +174,6 @@ class AlarmReceiver : BroadcastReceiver() {
         } catch (e: Exception) {
             Log.e(TAG, "Could not start AlarmActivity directly; notification will handle it", e)
         }
-        } catch (e: Exception) {
-            Log.e(TAG, "Could not start AlarmActivity directly; notification will handle it", e)
-        }
     }
 
     private fun stopAlarmService(context: Context) {
