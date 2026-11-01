@@ -69,9 +69,14 @@ class AlarmScheduler(private val context: Context) {
             return false
         }
 
-        if (triggerTimeMillis <= System.currentTimeMillis()) {
-            Log.w(TAG, "Trigger time $triggerTimeMillis is in the past, ignoring")
-            return false
+        var adjustedTriggerTime = triggerTimeMillis
+        val now = System.currentTimeMillis()
+        if (adjustedTriggerTime <= now) {
+            // If the scheduled time for today is already past, roll forward by 24 hours
+            while (adjustedTriggerTime <= now) {
+                adjustedTriggerTime += 86_400_000L // 24 hours in milliseconds
+            }
+            Log.i(TAG, "Trigger time $triggerTimeMillis was in past; rolled forward to next day: $adjustedTriggerTime")
         }
 
         try {
@@ -86,7 +91,7 @@ class AlarmScheduler(private val context: Context) {
                 putExtra(EXTRA_SNOOZE_DURATION, snoozeDuration)
                 putExtra(EXTRA_VIBRATION, vibrationEnabled)
                 putExtra(EXTRA_RINGTONE, ringtone ?: "default")
-                putExtra(EXTRA_SCHEDULED_TIME, triggerTimeMillis)
+                putExtra(EXTRA_SCHEDULED_TIME, adjustedTriggerTime)
             }
 
             val pendingIntent = PendingIntent.getBroadcast(
@@ -109,20 +114,20 @@ class AlarmScheduler(private val context: Context) {
 
             // Primary method: setAlarmClock() gives highest priority on Android
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                val alarmClockInfo = AlarmManager.AlarmClockInfo(triggerTimeMillis, showPendingIntent)
+                val alarmClockInfo = AlarmManager.AlarmClockInfo(adjustedTriggerTime, showPendingIntent)
                 alarmManager.setAlarmClock(alarmClockInfo, pendingIntent)
-                Log.d(TAG, "setAlarmClock scheduled: ID=$alarmId at $triggerTimeMillis for $medicineName")
+                Log.d(TAG, "setAlarmClock scheduled: ID=$alarmId at $adjustedTriggerTime for $medicineName")
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTimeMillis, pendingIntent)
-                Log.d(TAG, "setExactAndAllowWhileIdle scheduled: ID=$alarmId")
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, adjustedTriggerTime, pendingIntent)
+                Log.d(TAG, "setExactAndAllowWhileIdle scheduled: ID=$alarmId at $adjustedTriggerTime")
             } else {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerTimeMillis, pendingIntent)
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, adjustedTriggerTime, pendingIntent)
             }
 
             // Save to persistent storage for boot recovery
             saveAlarmMetadata(
                 alarmId,
-                triggerTimeMillis,
+                adjustedTriggerTime,
                 medicineId,
                 medicineName,
                 familyMemberName,
