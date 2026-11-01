@@ -571,14 +571,48 @@
       } catch(e) {}
     }
 
-    function renderClock() {
+    function checkAndTriggerScheduledAlarms() {
       const now = new Date();
       const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       document.getElementById('statusBarClock').innerText = timeStr;
       document.getElementById('alarmDigitalClock').innerText = timeStr;
+
+      // Extract current 24-hr hours and minutes
+      const curH = now.getHours();
+      const curM = now.getMinutes();
+      const cur24Str = (curH < 10 ? '0' + curH : curH) + ':' + (curM < 10 ? '0' + curM : curM);
+      const todayDateKey = now.toISOString().split('T')[0];
+
+      // Check if any medicine is scheduled for this exact minute
+      appData.medicines.forEach(med => {
+        if (med.status === 'taken') return;
+
+        let match = false;
+        // 1. Compare with raw 24-hr time
+        if (med.rawTime && med.rawTime === cur24Str) {
+          match = true;
+        }
+        // 2. Compare with formatted time string (e.g. "08:00 AM")
+        if (!match && med.time) {
+          const medTimeUpper = med.time.trim().toUpperCase();
+          const curTimeUpper = timeStr.trim().toUpperCase();
+          if (medTimeUpper === curTimeUpper) {
+            match = true;
+          }
+        }
+
+        // Trigger alarm if matched and not already rung in this minute today
+        if (match && med.lastRungMinute !== cur24Str) {
+          med.lastRungMinute = cur24Str;
+          med.lastRungDate = todayDateKey;
+          save(); // persist
+          ringAlarmWithMed(med);
+        }
+      });
     }
-    setInterval(renderClock, 1000);
-    renderClock();
+
+    setInterval(checkAndTriggerScheduledAlarms, 1000);
+    checkAndTriggerScheduledAlarms();
 
     function render() {
       const activeFamily = document.getElementById('familySelect').value;
@@ -949,16 +983,27 @@
       const stock = parseInt(document.getElementById('newMedStock').value) || 30;
       const family = document.getElementById('newMedFamily').value;
 
+      // Format input 24-hr time into 12-hr AM/PM for clean display
+      let formattedTime = time;
+      if (time && time.includes(':')) {
+        let [hh, mm] = time.split(':').map(Number);
+        const ampm = hh >= 12 ? 'PM' : 'AM';
+        const displayH = hh % 12 || 12;
+        formattedTime = (displayH < 10 ? '0' + displayH : displayH) + ':' + (mm < 10 ? '0' + mm : mm) + ' ' + ampm;
+      }
+
       appData.medicines.push({
         id: 'm_' + Date.now(),
         name,
         dose,
         form,
-        time,
+        time: formattedTime,
+        rawTime: time, // keep 24-hr time (e.g. "14:30") for accurate second-by-second matching
         instruction,
         stock,
         family,
-        status: 'pending'
+        status: 'pending',
+        lastRungDate: null
       });
       closeAddModal();
       save();
